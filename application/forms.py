@@ -2,10 +2,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 
-class GuessForm(forms.Form):
-    guessLat = forms.DecimalField(label='Latitude', max_digits=22, decimal_places=16)
-    guessLng = forms.DecimalField(label='Longitude', max_digits=22, decimal_places=16)
-
 class JoinForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'placeholder': 'Password'}))
