@@ -1,0 +1,25 @@
+<html>
+  <head>
+    {% load static %}
+    <title>FriendHub</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <div>
+          <p>Sign up</p>
+        </div>
+      </div>
+      <div>
+      <form method="POST">
+      {% csrf_token %}
+      {{ join_form.as_table }}
+      <div>
+        <input type="submit" value = "Sign Up"/>
+      </div>
+      <a href="/login">Already have an account?</a>
+      </form>
+      </div>
+    </div>
+  </body>
+</html>
