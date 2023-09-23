@@ -1,0 +1,24 @@
+<html>
+  <head>
+    {% load static %}
+    <title>FriendHub</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <p>Log In</p>
+      </div>
+    </div>
+    <div class="container">
+      <form action="/login/" method="POST">
+       {{ login_form }}
+        {% csrf_token %}
+        {% if correct == False %}
+        <p style = "color:rgb(209, 64, 64);">Invalid Username and or Password</p>
+        {% endif %}
+        <input type="submit"  value = "Login"/>
+        <a href="/join">Create an account</a>
+        </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+<html>
+  <head>
+    {% load static %}
+    <title>FriendHub</title>
+  </head>
+<nav>
+    {% if user.is_authenticated %}
+    <li>
+    <a href="/logout/">Logout</a>
+    </li>
+    {% else %}
+    <li>
+    <a href="/login/">Login</a>
+    </li>
+    {% endif %}
+</nav>
+</html>
