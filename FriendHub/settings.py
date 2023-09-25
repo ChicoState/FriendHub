@@ -76,15 +76,22 @@ WSGI_APPLICATION = 'FriendHub.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 # Friend Hub DB
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME":"FriendHubDB",
-        "USER":"friendhubdevs",
-        "PASSWORD": "friendhubdevspass",
-        "HOST": "localhost",
-        "PORT":"3306",
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME":"FriendHubDB",
+#         "USER":"friendhubdevs",
+#         "PASSWORD": "friendhubdevspass",
+#         "HOST": "localhost",
+#         "PORT":"3306",
         
+#     }
+# }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
