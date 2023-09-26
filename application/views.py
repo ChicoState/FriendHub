@@ -4,7 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from application.forms import JoinForm, LoginForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-
+import requests
+import os
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'home.html')
@@ -65,3 +66,10 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect("/")
+
+@login_required(login_url='/login/')
+def loadMapAPI(request):
+        API_KEY = os.getenv('API_KEY')
+        url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
+        response = requests.get(url)
+        return HttpResponse(response.content, content_type='application/javascript')

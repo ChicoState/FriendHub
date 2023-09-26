@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <link rel="stylesheet" type="text/css" href="../static/css/map.css"/>
+  </head>
+  <body>
+    <h3>FriendHub</h3>
+    <!--The div element for the map -->
+    <div id="map"></div>
+    </body>
+
+    <script src = "{% url 'map' %}" defer> </script>
+
+    <script>
+let map;
+function initMap() {
+  // The location of Chico 
+  const position = { lat: 39.7285, lng: -121.8375 };
+  // Request needed libraries.
+
+  // const { Map } = google.maps.importLibrary("maps");
+  const { AdvancedMarkerElement } = google.maps.importLibrary("marker");
+
+  // The map, centered at Chico
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 14,
+    center: position,
+    // mapId: "DEMO_MAP_ID",
+  });
+
+
+
+  const marker = new google.maps.Marker({
+    map: map,
+    position: position,
+    title: "Chico",
+  });
+}
+
+window.initMap = initMap;
+      </script>
+</html>
