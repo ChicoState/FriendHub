@@ -4,7 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from application.forms import JoinForm, LoginForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-
+import requests
+import os
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'home.html')
@@ -60,6 +61,11 @@ def user_login(request):
     else:
         # someone is trying to access the login form, so send the form
         return render(request, 'login.html', {"login_form": LoginForm, "correct": True})
+
+@login_required(login_url='/login/')
+def user_logout(request):
+    logout(request)
+    return redirect("/")
 
 @login_required(login_url='/login/')
 def loadMapAPI(request):
