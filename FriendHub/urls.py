@@ -23,4 +23,5 @@ urlpatterns = [
     path("login/", app_views.user_login),
     path("join/", app_views.join),
     path("logout/", app_views.user_logout),
+    path('map/', app_views.map.loadMapAPI, name='map'),
 ]

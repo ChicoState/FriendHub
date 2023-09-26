@@ -62,6 +62,8 @@ def user_login(request):
         return render(request, 'login.html', {"login_form": LoginForm, "correct": True})
 
 @login_required(login_url='/login/')
-def user_logout(request):
-    logout(request)
-    return redirect("/")
+def loadMapAPI(request):
+        API_KEY = os.getenv('API_KEY')
+        url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
+        response = requests.get(url)
+        return HttpResponse(response.content, content_type='application/javascript')
