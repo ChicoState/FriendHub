@@ -6,6 +6,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import requests
 import os
+
+#models
+# from application.models import UserData  # Import your specific model
+
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'home.html')
@@ -73,3 +77,21 @@ def loadMapAPI(request):
         url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
         response = requests.get(url)
         return HttpResponse(response.content, content_type='application/javascript')
+
+
+# def change_data_for_model():
+#     try:
+#         # Retrieve all objects of the model
+#         user_to_change = UserData.objects.all()
+        
+#         # Loop through the objects and update data as needed
+#         for obj in user_to_change:
+#             # Modify the data for each object as desired
+#             obj.latitude = 1.
+#             obj.save()
+            
+#         # Optionally, print a message to confirm the update
+#         print(f"Data changed for {len(objects_to_change)} objects of {YourModel.__name__}.")
+#     except Exception as e:
+#         # Handle any exceptions that may occur during the process
+#         print(f"Error: {str(e)}")
