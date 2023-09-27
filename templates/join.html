@@ -1,12 +1,13 @@
 <html>
   <head>
     {% load static %}
+    <link rel="stylesheet" href="{%static 'css/join.css' %}" />
     <title>FriendHub</title>
   </head>
   <body>
-    <div>
-      <div>
-        <div>
+    <div class="container">
+      <div class = "pageLabelWrapper">
+        <div class = "pageLabel">
           <p>Sign up</p>
         </div>
       </div>
@@ -14,8 +15,8 @@
       <form method="POST">
       {% csrf_token %}
       {{ join_form.as_table }}
-      <div>
-        <input type="submit" value = "Sign Up"/>
+      <div class = "inputWrapper">
+        <input id = "submitBtn" type="submit" value = "Sign Up"/>
       </div>
       <a href="/login">Already have an account?</a>
       </form>

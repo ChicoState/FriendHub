@@ -1,11 +1,12 @@
 <html>
   <head>
     {% load static %}
+    <link rel="stylesheet" href="{%static 'css/login.css' %}" />
     <title>FriendHub</title>
   </head>
   <body>
-    <div>
-      <div>
+    <div class = "pageLabelWrapper">
+      <div class = "pageLabel">
         <p>Log In</p>
       </div>
     </div>
@@ -16,7 +17,7 @@
         {% if correct == False %}
         <p style = "color:rgb(209, 64, 64);">Invalid Username and or Password</p>
         {% endif %}
-        <input type="submit"  value = "Login"/>
+        <input id = "submitBtn" type="submit"  value = "Login"/>
         <a href="/join">Create an account</a>
         </form>
     </div>
