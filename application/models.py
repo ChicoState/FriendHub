@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 class UserData(models.Model):
     #store user in "user"
-    user = models.ForeignKey(User, on_delete=models.CASCADE);
+    djangoUser = models.ForeignKey(User, on_delete=models.CASCADE);
     #store location in "latitude" and "longitude"
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
@@ -15,5 +15,5 @@ class UserData(models.Model):
 
 
     def __str__(self) -> str:
-        return self.username
+        return self.djangoUser.username
     

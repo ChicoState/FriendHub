@@ -8,7 +8,7 @@ import requests
 import os
 
 #models
-# from application.models import UserData  # Import your specific model
+from application.models import UserData
 
 @login_required(login_url='/login/')
 def home(request):
@@ -26,6 +26,12 @@ def join(request):
             user.set_password(user.password)
             # save encrypted password to DB
             user.save()
+            new_user = UserData.objects.create(
+                 djangoUser = user,
+                 latitude = 39.727372,
+                 longitude = -121.854748
+            )
+            new_user.save()
             # success
             return redirect("/")
         else:
@@ -79,19 +85,26 @@ def loadMapAPI(request):
         return HttpResponse(response.content, content_type='application/javascript')
 
 
-# def change_data_for_model():
-#     try:
-#         # Retrieve all objects of the model
-#         user_to_change = UserData.objects.all()
+def change_data_for_model():
+        print("in changing_data_for_model")
+        user_to_change = UserData.objects.all()
+        print(user_to_change)
+        # Loop through the objects and update data as needed
+        for obj in user_to_change:
+            # Modify the data for each object as desired
+            print("changing user: " + obj.user)
+            obj.latitude = 40.14125261
+            obj.longitude = -121.852463
+            obj.save()
+
+
+def print_data_for_model():
+        print("in print_data_for_model")
+        # Retrieve all objects of the model
+        user_to_change = UserData.objects.all()
         
-#         # Loop through the objects and update data as needed
-#         for obj in user_to_change:
-#             # Modify the data for each object as desired
-#             obj.latitude = 1.
-#             obj.save()
+        # Loop through the objects and update data as needed
+        for obj in user_to_change:
+            # Modify the data for each object as desired
+            print(obj)
             
-#         # Optionally, print a message to confirm the update
-#         print(f"Data changed for {len(objects_to_change)} objects of {YourModel.__name__}.")
-#     except Exception as e:
-#         # Handle any exceptions that may occur during the process
-#         print(f"Error: {str(e)}")
