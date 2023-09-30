@@ -6,6 +6,10 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 import requests
 import os
+
+#models
+from application.models import UserData
+
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'home.html')
@@ -22,6 +26,12 @@ def join(request):
             user.set_password(user.password)
             # save encrypted password to DB
             user.save()
+            new_user = UserData.objects.create(
+                 djangoUser = user,
+                 latitude = 39.727372,
+                 longitude = -121.854748
+            )
+            new_user.save()
             # success
             return redirect("/")
         else:
@@ -73,3 +83,28 @@ def loadMapAPI(request):
         url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
         response = requests.get(url)
         return HttpResponse(response.content, content_type='application/javascript')
+
+
+def change_data_for_model():
+        print("in changing_data_for_model")
+        user_to_change = UserData.objects.all()
+        print(user_to_change)
+        # Loop through the objects and update data as needed
+        for obj in user_to_change:
+            # Modify the data for each object as desired
+            print("changing user: " + obj.user)
+            obj.latitude = 40.14125261
+            obj.longitude = -121.852463
+            obj.save()
+
+
+def print_data_for_model():
+        print("in print_data_for_model")
+        # Retrieve all objects of the model
+        user_to_change = UserData.objects.all()
+        
+        # Loop through the objects and update data as needed
+        for obj in user_to_change:
+            # Modify the data for each object as desired
+            print(obj)
+            
