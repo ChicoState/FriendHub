@@ -1,45 +1,68 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Add Map</title>
+    {% load static %}
+    {% include "header.html" %}
+    <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
     <link rel="stylesheet" type="text/css" href="../static/css/map.css"/>
   </head>
   <body>
-    <h3>FriendHub</h3>
-    <!--The div element for the map -->
+    <div class = "home-label">
+      <a href="/">
+        <img title = "return home" src="{%static 'images/home-icon.svg' %}">
+      </a>
+    </div>
     <div id="map"></div>
-    </body>
-
-    <script src = "{% url 'map' %}" defer> </script>
-
+    <script src="{% url 'gMap' %}" defer></script>
     <script>
-let map;
-function initMap() {
-  // The location of Chico 
-  const position = { lat: 39.7285, lng: -121.8375 };
-  // Request needed libraries.
+      let map;
+      let circle;
+      let infoWindow;
 
-  // const { Map } = google.maps.importLibrary("maps");
-  const { AdvancedMarkerElement } = google.maps.importLibrary("marker");
+      function initMap() {
+        // The location of Chico
+        const position = { lat: 39.7285, lng: -121.8375 };
 
-  // The map, centered at Chico
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 14,
-    center: position,
-    // mapId: "DEMO_MAP_ID",
-  });
+        // The map, centered at Chico
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
+          center: position,
+          mapTypeControl: true,
+          fullscreenControl: false,
+          streetViewControl: false,
+          mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+            position: google.maps.ControlPosition.TOP_RIGHT
+          }
+        });
 
+        // Create an info window with the tooltip content
+        infoWindow = new google.maps.InfoWindow({
+          content: "Numan is somewhere here",
+        });
 
+        // Create a circle with a radius of 100 meters
+        circle = new google.maps.Circle({
+          map: map,
+          center: position,
+          radius: 1000, // in meters
+          fillColor: "#007bff", // fill color of the circle
+          fillOpacity: 0.2,    // opacity of the fill
+          strokeColor: "#007bff", // border color
+          strokeOpacity: 0.8,      // opacity of the border
+          clickable: true,
+          strokeWeight: 2,     // border thickness
+        });
+        
+        google.maps.event.addListener(circle, 'click', function(ev){
+            infoWindow.setPosition(ev.latLng);
+            infoWindow.open(map);
+        });
+        // Add a mouseover event listener to the circle to display the tooltip
+      }
 
-  const marker = new google.maps.Marker({
-    map: map,
-    position: position,
-    title: "Chico",
-  });
-}
-
-window.initMap = initMap;
-      </script>
+      window.initMap = initMap;
+    </script>
+  </body>
 </html>
