@@ -19,7 +19,7 @@ from application import views as app_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", app_views.home),
+    path("friendList", app_views.home),
     path("login/", app_views.user_login),
     path("join/", app_views.join),
     path("logout/", app_views.user_logout),
