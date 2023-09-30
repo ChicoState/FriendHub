@@ -29,7 +29,23 @@ body {
 
 .custom-shape-divider-bottom-1696042419 .shape-fill {
     fill: #0028BB;
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
 }
+
+@keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scaleY(.99);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 
 h1, p, a {
     margin: 0;
