@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from application.forms import JoinForm, LoginForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from .models import UserData
 import requests
 import os
 
@@ -16,7 +17,30 @@ def home(request):
 
 @login_required(login_url='/login/')
 def map(request):
-     return render(request, 'map.html')
+    user_data = UserData.objects.get(djangoUser=request.user)
+
+    username = user_data.djangoUser.username
+    firstname = user_data.djangoUser.first_name
+    latitude = user_data.latitude
+    longitude = user_data.longitude
+
+    friends = user_data.friends.all()
+
+    friends_first_name = [friend.djangoUser.user.name for friend in friends]
+    friends_lat = [friend.latitude for friend in friends]
+    friends_long = [friend.longitude for friend in friends]
+
+    context = {
+        'username': username,
+        'firstname': firstname,
+        'latitude': latitude,
+        'longitude': longitude,
+        'friends_first_name': friends_first_name,
+        'friends_lat': friends_lat,
+        'friends_long': friends_long,
+    }
+
+    return render(request, 'map.html', context)
 
 def join(request):
     # if someone submitted a join form (created account)
@@ -89,27 +113,3 @@ def loadMapAPI(request):
         url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
         response = requests.get(url)
         return HttpResponse(response.content, content_type='application/javascript')
-
-def change_data_for_model():
-        print("in changing_data_for_model")
-        user_to_change = UserData.objects.all()
-        print(user_to_change)
-        # Loop through the objects and update data as needed
-        for obj in user_to_change:
-            # Modify the data for each object as desired
-            print("changing user: " + obj.user)
-            obj.latitude = 40.14125261
-            obj.longitude = -121.852463
-            obj.save()
-
-
-def print_data_for_model():
-        print("in print_data_for_model")
-        # Retrieve all objects of the model
-        user_to_change = UserData.objects.all()
-        
-        # Loop through the objects and update data as needed
-        for obj in user_to_change:
-            # Modify the data for each object as desired
-            print(obj)
-            
