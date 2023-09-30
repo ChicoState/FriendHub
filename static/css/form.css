@@ -52,10 +52,9 @@ form {
     width: 300px;
     border-radius: 15px;
 }
-  
+
 form input:not(:last-child) {
-    font: inherit;
-    /* background: transparent; */
+    font-family: inherit;
     border: 1px solid grey;
     border-radius: 0.25rem;
     color: #000000;
@@ -64,6 +63,10 @@ form input:not(:last-child) {
     outline: none;
     width: 100%;
     padding: 0.5rem 1rem;
+}
+
+form input:not(:last-child):focus {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
 
 #submitBtn{
@@ -77,6 +80,11 @@ form input:not(:last-child) {
     text-align: center;
     margin-top: 0.5rem;
     letter-spacing: .25rem;
+    transition: 100ms ease-in-out;
+}
+
+#submitBtn:hover{
+    transform: scale(1.01);
 }
 
 form label{
