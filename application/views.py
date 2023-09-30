@@ -14,6 +14,10 @@ from application.models import UserData
 def home(request):
     return render(request, 'home.html')
 
+@login_required(login_url='/login/')
+def map(request):
+     return render(request, 'map.html')
+
 def join(request):
     # if someone submitted a join form (created account)
     if (request.method == "POST"):
@@ -26,10 +30,12 @@ def join(request):
             user.set_password(user.password)
             # save encrypted password to DB
             user.save()
+            lat = jform.cleaned_data["lat"]
+            lng = jform.cleaned_data["lng"]
             new_user = UserData.objects.create(
                  djangoUser = user,
-                 latitude = 39.727372,
-                 longitude = -121.854748
+                 latitude = lat,
+                 longitude = lng
             )
             new_user.save()
             # success
@@ -83,7 +89,6 @@ def loadMapAPI(request):
         url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
         response = requests.get(url)
         return HttpResponse(response.content, content_type='application/javascript')
-
 
 def change_data_for_model():
         print("in changing_data_for_model")

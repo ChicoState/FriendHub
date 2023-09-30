@@ -5,9 +5,29 @@
 }
 
 body {
-    font-family: sans-serif;
-    background: rgb(0, 0, 0)
-    /* background: radial-gradient(66.5% 221.21% at 136.03% -61.44%,rgba(58,232,189,.5) 0%,rgba(58,232,189,0) 92.09%),radial-gradient(93.54% 126.91% at 29.15% -56.29%,rgba(58,232,189,.8) 0%,rgba(58,232,189,0) 92.09%),radial-gradient(86.19% 101.84% at -17.13% -24.8%,#7950e5 0%,rgba(121,80,229,0) 92.09%), #1a1a2e; */
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(66.5% 221.21% at 136.03% -61.44%,rgba(0,53,254,255) 0%,rgba(58,232,189,0) 92.09%),radial-gradient(93.54% 126.91% at 29.15% -56.29%,rgba(0,53,254,255) 0%,rgba(58,232,189,0) 92.09%),radial-gradient(86.19% 101.84% at -17.13% -24.8%,#7950e5 0%,rgba(121,80,229,0) 92.09%), #1a1a2e;
+}
+
+.custom-shape-divider-bottom-1696042419 {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.custom-shape-divider-bottom-1696042419 svg {
+    position: relative;
+    display: block;
+    width: calc(190% + 1.3px);
+    height: 223px;
+}
+
+.custom-shape-divider-bottom-1696042419 .shape-fill {
+    fill: #0028BB;
 }
 
 h2 {
@@ -31,7 +51,7 @@ form {
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.25rem;
     width: 300px;
 }
 
@@ -47,7 +67,7 @@ form input:not(:last-child) {
     padding: 0.5rem 1rem;
 
     font-weight: 700;
-    font-style: italic;
+    /* font-style: italic; */
 }
 
 ::placeholder{
@@ -58,13 +78,16 @@ form input:not(:last-child) {
     display: flex;
     justify-content: center;
 }
-form label {
-    display: none;
 
+form label {
+    color: #FFFAFF;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1rem;
 }
 .pageLabel {
     align-items: center;
-    font-style: italic;
+    /* font-style: italic; */
     text-transform: uppercase;
     user-select: none;
     background-color: rgba(16,16,28,.4);
@@ -91,18 +114,19 @@ form label {
     width: 100%;
 }
 #submitBtn{
-    background: transparent;
-    border-radius: 3.75rem;
-    color: #fff;
-    font-family: inherit;
-    font-size: .95rem;
-    font-weight: 700;
-    font-style: italic;
-    text-align: center;
-    border: 0.0625rem solid hsla(0,0%,100%,.8);
-    padding: .5rem 1.5rem;
+    border: none;
     cursor: pointer;
-    width: 50%;
+    background: #4d7cce;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 0.5rem;
+    letter-spacing: .25rem;
+    width: 100%;
+    padding: 8px 16px;
+    border-radius: 0.25rem;
 }
 
 a {
