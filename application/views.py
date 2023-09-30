@@ -16,6 +16,10 @@ def home(request):
     return render(request, 'home.html')
 
 @login_required(login_url='/login/')
+def friendList(request):
+    return render(request, 'friendList.html')
+
+@login_required(login_url='/login/')
 def map(request):
     user_data = UserData.objects.get(djangoUser=request.user)
 
