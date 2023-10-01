@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
@@ -5,6 +6,12 @@ from application.forms import JoinForm, LoginForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import UserData
+from django.http import JsonResponse
+from django.core import serializers
+
+
+
+
 import requests
 import os
 
@@ -117,3 +124,46 @@ def loadMapAPI(request):
         url = f'https://maps.googleapis.com/maps/api/js?key={API_KEY}&callback=initMap'
         response = requests.get(url)
         return HttpResponse(response.content, content_type='application/javascript')
+
+
+
+def populate_all_users(request):
+    # Fetch data from the Friend model
+    all_users = UserData.objects.values('id', 'djangoUser__username', 'latitude', 'longitude')
+
+    all_users_json = json.dumps(list(all_users))
+    
+    # Pass the data to the template
+    # return render(request, 'friendList.html', {'all_users': all_users})
+
+    return JsonResponse({'all_users': all_users_json})
+
+
+@login_required
+def add_friend(request):
+    if request.method == 'POST':
+        friend_username = request.POST.get('username')
+        print(f"Friend username from POST: {friend_username}")  # Debug statement
+
+        try:
+            friend_user_data = UserData.objects.get(djangoUser__username=friend_username)
+            print(f"Found friend_user_data: {friend_user_data}")  # Debug statement
+
+            user_data = UserData.objects.get(djangoUser=request.user)
+            print(f"User data for the logged-in user: {user_data}")  # Debug statement
+
+            # Check if the friend is not already in the user's friend list
+            if friend_user_data != user_data and not user_data.friends.filter(djangoUser=friend_user_data.djangoUser).exists():
+                user_data.friends.add(friend_user_data.djangoUser)
+                user_data.save()
+                return JsonResponse({'success': True, 'message': 'Friend added successfully.'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Friend is already in your friend list or is yourself.'})
+        except UserData.DoesNotExist:
+            print(f"User with username '{friend_username}' does not exist.")  # Debug statement
+            return JsonResponse({'success': False, 'message': 'User with that username does not exist.'})
+    else:
+        print("Invalid request method.")  # Debug statement
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
+

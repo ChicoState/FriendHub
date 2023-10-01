@@ -1,12 +1,90 @@
 <!DOCTYPE html>
+<html>
 <head>
     <title>Friends</title>
 </head>
 <body>
     <h1>Your Friends [WIP!!]</h1>
-    <button>Add Friends [Coming Soon!]</button>
-    <button>Remove Friends [Coming Soon!]</button>
-    <!-- add a list displaying da friends!
-    Fetch their usernames from the friend list, and display it -->
+
+    <input type="text" id="inputString" placeholder="Enter a username">
+    <button onclick="processString()">Add Friend</button>
+
+    <script>
+        // JavaScript function to process the string
+        function processString() {
+            var inputField = document.getElementById('inputString');
+            var searchString = inputField.value.trim();
+
+            // Send an AJAX request to fetch user data
+            fetch('/populate_all_users/', {
+                method: 'GET',
+            })
+            .then(response => response.json())
+            .then(data => {
+                var all_db_users = JSON.parse(data.all_users);
+
+                var foundUser = null;
+
+                for (var i = 0; i < all_db_users.length; i++) {
+                    var user = all_db_users[i];
+                    if (user['djangoUser__username'] === searchString) {
+                        foundUser = user;
+                        break;
+                    }
+                }
+
+                if (foundUser) {
+                    var username = foundUser['djangoUser__username'];
+                    console.log('Found user: ' + username);
+
+
+                    // Send an AJAX request to add the found user as a friend
+                    fetch('/add_friend/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+                        },
+                        body: 'username=' + encodeURIComponent(username),
+                    })
+                    
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            inputField.value = 'Friend added successfully';
+                        } else {
+                            inputField.value = 'Failed to add friend: ' + data.message;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    console.log('User not found.');
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+    </script>
 </body>
 </html>

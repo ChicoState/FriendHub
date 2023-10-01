@@ -20,10 +20,14 @@ from application import views as app_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", app_views.home),
-    path("friendList/", app_views.friendList),
+     path("friendList/", app_views.friendList),
     path("login/", app_views.user_login),
     path("join/", app_views.join),
     path("logout/", app_views.user_logout),
     path("map/", app_views.map),
     path('gMap/', app_views.loadMapAPI, name='gMap'),
+    path('populate_all_users/', app_views.populate_all_users, name='populate_all_users'),
+    path('add_friend/', app_views.add_friend, name='add_friend'),
+
+
 ]
