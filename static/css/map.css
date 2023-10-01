@@ -7,4 +7,36 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    position: relative;
+  }
+
+  .home-label{
+    margin-top: 1rem;
+    margin-left: 1rem;
+    transition: 500ms ease-in-out;
+  }
+  
+  .home-label img {
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 75%;
+    transition: 100ms ease-in-out;
+  }
+  
+  .home-label img:hover{
+    opacity: 100%;
+  }
+
+.home-label{
+  z-index: 2;
+  position: absolute;
+  
+  font-weight: 700;
+  font-style: italic;
+  user-select: none;
+  background-color: rgba(16,16,28,.4);
+  color: #fff;
+  border-radius: 3px;
+  overflow: hidden;
+  padding: 0.6rem 1rem;
 }

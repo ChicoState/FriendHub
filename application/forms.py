@@ -4,17 +4,19 @@ from django.core.validators import MinLengthValidator
 
 class JoinForm(forms.ModelForm):
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password', 'placeholder': 'Password'}))
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}))
     email = forms.CharField(
-        widget=forms.TextInput(attrs={'size': '30', 'placeholder': 'Email'}))
+        widget=forms.TextInput(attrs={'size': '30'}))
     first_name = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'First Name'}))
+        widget=forms.TextInput())
     last_name = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'Last Name'}))
+        widget=forms.TextInput())
     username = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': 'Username'}),
+        widget=forms.TextInput(),
         validators=[MinLengthValidator(3)]
     )
+    lat = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Latitude', max_digits=22, decimal_places=16)
+    lng = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Longitude', max_digits=22, decimal_places=16)
 
     class Meta:
         model = User

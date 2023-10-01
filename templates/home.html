@@ -2,42 +2,55 @@
 <html>
   <head>
     {% load static %}
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="../static/css/map.css"/>
-    <title>FriendHub</title>
+    {% include "header.html" %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <link rel="stylesheet" type="text/css" href="{%static 'css/home.css' %}?v=1"/>
   </head>
   <body>
-    {% include "nav.html" %}
-     <div id="map"></div>
-  </body>  
-
-   <script src = "{% url 'map' %}" defer> </script>
-    <script>
-let map;
-function initMap() {
-  // The location of Chico 
-  const position = { lat: 39.7285, lng: -121.8375 };
-  // Request needed libraries.
-
-  // const { Map } = google.maps.importLibrary("maps");
-  const { AdvancedMarkerElement } = google.maps.importLibrary("marker");
-
-  // The map, centered at Chico
-  map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 14,
-    center: position,
-    // mapId: "DEMO_MAP_ID",
-  });
-
-  const marker = new google.maps.Marker({
-    map: map,
-    position: position,
-    title: "Chico",
-  });
-}
-
-window.initMap = initMap;
-      </script>
+    <img style = "margin: 15px; position: absolute; height: 75px; width: 75px;" src = "/static/images/logo.svg" /> </div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="circle"></div>
+    <div class="custom-shape-divider-bottom-1696042419">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+          <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+      </svg>
+    </div>
+    <div class = "body-wrapper">
+      <div class = "menu-wrapper">
+        <a href = "/friendList/" class = "menu-button" tabindex="3" draggable="false">
+          <i class="menu-title fa-solid fa-user-group"></i>
+          <span class = "menu-title">FRIENDS</span>
+        </a>
+        <a href = "/map/" id = "play" class = "menu-button" tabindex="2" draggable="false">
+          <i class="fa-solid fa-map menu-title"></i>
+          <span class = "menu-title">MAP</span>
+        </a>
+        <a href = "/logout/" class = "menu-button" tabindex="5" draggable="false">
+            <i class="menu-title fa-solid fa-right-from-bracket"></i>
+            <span id = "logout" class = "menu-title">LOGOUT</span>
+        </a>
+      </div>
+    </div>
+  </body>
+  <script src="../static/js/home.js"></script>
   </html>
