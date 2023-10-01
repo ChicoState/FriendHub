@@ -64,6 +64,8 @@ class UserData(models.Model):
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
     
+    friends = models.ManyToManyField('self', blank=True)
+
     def __str__(self) -> str:
         return self.djangoUser.username
     
