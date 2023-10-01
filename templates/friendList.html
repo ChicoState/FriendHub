@@ -3,10 +3,55 @@
     <title>Friends</title>
 </head>
 <body>
-    <h1>Your Friends [WIP!!]</h1>
-    <button>Add Friends [Coming Soon!]</button>
-    <button>Remove Friends [Coming Soon!]</button>
-    <!-- add a list displaying da friends!
-    Fetch their usernames from the friend list, and display it -->
+    <h1>Your Friends</h1>
+
+    <h2>Send a Friend Request</h2>
+    <!-- Display the message if it exists -->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    
+    <form action="{% url 'sendFriendRequest' %}" autocomplete="off" method="post">
+        {% csrf_token %}
+        <input autocomplete="off" type="text" name = "username1" placeholder="Friend Username">
+        <button type="submit">Send Request</button>
+    </form>    
+
+    <h2>Received Friend Requests</h2>
+    <ul>
+        {% for request in friendRequestsReceived %}
+        <li>
+            {{ request.sender.username }}
+            <a href="{% url 'acceptFriendRequest' request.id %}">Accept</a>
+            <a href="{% url 'declineFriendRequest' request.id %}">Decline</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Sent Friend Requests</h2>
+    <ul>
+        {% for request in friendRequestsSent %}
+        <li>
+            {{ request.receiver.username }}
+            <a href="{% url 'cancelFriendRequest' request.id %}">Cancel</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Current Friends</h2>
+    <ul>
+        {% for friend in friends %}
+        <li>
+            {{ friend.username }}
+            <a href="{% url 'removeFriend' friend.id %}">Remove</a>
+        </li>
+        {% endfor %}        
+    </ul>
+
 </body>
 </html>
