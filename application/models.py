@@ -7,6 +7,9 @@ class UserData(models.Model):
     #store location in "latitude" and "longitude"
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
+
+    friends = models.ManyToManyField('self', blank=True)
+
     
     def __str__(self) -> str:
         return self.djangoUser.username

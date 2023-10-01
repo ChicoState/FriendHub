@@ -37,16 +37,18 @@
           }
         });
 
+        var user_first_name = "{{ firstname }}"
+        
         // Create an info window with the tooltip content
         infoWindow = new google.maps.InfoWindow({
-          content: "Numan is somewhere here",
+          content: user_first_name + " is somewhere here",
         });
 
         // Create a circle with a radius of 100 meters
         circle = new google.maps.Circle({
           map: map,
           center: position,
-          radius: 1000, // in meters
+          radius: 100, // in meters
           fillColor: "#007bff", // fill color of the circle
           fillOpacity: 0.2,    // opacity of the fill
           strokeColor: "#007bff", // border color
@@ -59,6 +61,28 @@
             infoWindow.setPosition(ev.latLng);
             infoWindow.open(map);
         });
+       
+        var friendNames = "{{ friends_first_name }}";
+        var friendLats = "{{ friends_lat }}";
+        var friendsLong = "{{ friends_long }}"
+
+        for(var i=0; i<friendNames.length; i++) {
+          // Create a circle with a radius of 100 meters
+
+          friend_pos = { lat: friendsLats[i], lng: friendsLong[i]};
+
+          friend_circle = new google.maps.Circle({
+            map: map,
+            center: friend_pos,
+            radius: 100, // in meters
+            fillColor: "#007bff", // fill color of the circle
+            fillOpacity: 0.2,    // opacity of the fill
+            strokeColor: "#007bff", // border color
+            strokeOpacity: 0.8,      // opacity of the border
+            clickable: true,
+            strokeWeight: 2,     // border thickness
+          });
+        }
         // Add a mouseover event listener to the circle to display the tooltip
       }
 
