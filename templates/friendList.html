@@ -13,6 +13,14 @@
     </a>
     {% include "cursorWave.html" %}
     <div class="container">
+        <form method="post" action="{% url 'setDistancePreference' %}">
+            {% csrf_token %}
+            <div class="distance-selector">
+                <label for="{{ form.distance.idForLabel }}">how much do you want to show? </label>
+                {{ form.distance }}
+                <input id="leftAlignedSubmit" type="submit" value="submit">
+            </div>
+        </form>        
         <div class="friends-section">
             <h2>Current Friends</h2>
             <table>

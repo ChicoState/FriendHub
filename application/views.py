@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from application.forms import JoinForm, LoginForm
+from application.forms import JoinForm, LoginForm, DistancePreferenceForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import UserData, FriendRequest, FriendList
@@ -11,37 +11,46 @@ import requests
 from django.db.models import Q
 from application.models import UserData
 import os
-
-#models
 from application.models import UserData
 
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'home.html')
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import UserData
+
 @login_required(login_url='/login/')
 def map(request):
+    # Get the user's data instance
     user_data = UserData.objects.get(djangoUser=request.user)
 
+    # Get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
     latitude = user_data.latitude
     longitude = user_data.longitude
+    distance_preference = user_data.distancePreference
 
-    friends = user_data.friends.all()
+    # Get the friend's details using the get_friends_coordinates function
+    friends_details = user_data.get_friends_coordinates()
 
-    friends_first_name = [friend.djangoUser.user.name for friend in friends]
-    friends_lat = [friend.latitude for friend in friends]
-    friends_long = [friend.longitude for friend in friends]
+    # Print the friends' details to the console
+    for friend in friends_details:
+        print("Name:", friend['username'])
+        print("Latitude:", friend['latitude'])
+        print("Longitude:", friend['longitude'])
+        print("Distance Preference:", friend['distancePreference'])
+        print("-" * 40)  # Separating line
 
     context = {
         'username': username,
         'firstname': firstname,
         'latitude': latitude,
         'longitude': longitude,
-        'friends_first_name': friends_first_name,
-        'friends_lat': friends_lat,
-        'friends_long': friends_long,
+        'distance_preference': distance_preference,
+        'friends_details': friends_details
     }
 
     return render(request, 'map.html', context)
@@ -61,9 +70,10 @@ def join(request):
             lat = jform.cleaned_data["lat"]
             lng = jform.cleaned_data["lng"]
             new_user = UserData.objects.create(
-                 djangoUser = user,
-                 latitude = lat,
-                 longitude = lng
+                djangoUser = user,
+                latitude = lat,
+                longitude = lng,
+                distancePreference = 1
             )
             new_user.save()
             # success
@@ -120,30 +130,49 @@ def loadMapAPI(request):
 
 @login_required(login_url='/login/')
 def friendList(request):
+    # retrieve friend requests for the current user
     friendRequestsReceived = FriendRequest.objects.filter(receiver=request.user)
     friendRequestsSent = FriendRequest.objects.filter(sender=request.user)
+    
+    # get or create friendlist for the current user
     friends, _ = FriendList.objects.get_or_create(user=request.user)
+    
+    # get user data for current user
+    user_data = UserData.objects.get(djangoUser=request.user)
+    currentDistancePreference = user_data.distancePreference
+    
+    # instantiate the distance preference form
+    form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
     
     context = {
         'friendRequestsReceived': friendRequestsReceived,
         'friendRequestsSent': friendRequestsSent,
-        'friends': friends.friends.all()
+        'friends': friends.friends.all(),
+        'form': form
     }
+    
     return render(request, 'friendList.html', context)
 
 @login_required(login_url='/login/')
 def sendFriendRequest(request):
     if request.method == 'POST':
+        # get the username from the post data
         username = request.POST.get('username1')
+        
         try:
+            # get the user instance for the provided username
             receiver = User.objects.get(username=username)
+            
+            # check if self-friend request
             if receiver.username != request.user.username:
-                # Get the FriendList instance for the current user
+                
+                # check for mutual friendship
                 sender_friend_list = FriendList.objects.get(user=request.user)
-                # Check if they are already mutual friends
                 if sender_friend_list.isMutualFriend(receiver):
                     messages.warning(request, "You are already friends!")
                     return redirect('friendList')
+                
+                # check for existing friend request
                 existing_request = FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists()
                 if not existing_request:
                     FriendRequest.objects.create(sender=request.user, receiver=receiver)
@@ -154,19 +183,24 @@ def sendFriendRequest(request):
                 messages.warning(request, "You cannot send a friend request to yourself!")
         except User.DoesNotExist:
             messages.error(request, "User does not exist!")
+    
     return redirect('friendList')
 
 @login_required(login_url='/login/')
 def removeFriend(request, friendId):
+    # get the current user
     current_user = request.user
+    
     try:
+        # get the user instance for the friend to remove
         friend_to_remove = User.objects.get(id=friendId)
-        # Get the FriendList of the current user
+        
+        # remove the friend
         user_friend_list = FriendList.objects.get(user=current_user)
-        # Remove the friend using the model's method
         user_friend_list.unfriend(friend_to_remove)
         messages.success(request, f"Successfully unfriended {friend_to_remove.username}!")
-        # Remove any friend requests (either sent or received) between these two users
+        
+        # remove any friend requests between the two users
         FriendRequest.objects.filter(
             Q(sender=current_user, receiver=friend_to_remove) | 
             Q(sender=friend_to_remove, receiver=current_user)
@@ -175,23 +209,48 @@ def removeFriend(request, friendId):
         messages.error(request, "User does not exist!")
     except FriendList.DoesNotExist:
         messages.error(request, "Friend list not found!")
+    
     return redirect('friendList')
-
 
 @login_required(login_url='/login/')
 def acceptFriendRequest(request, requestId):  
+    # get the friend request object
     friend_request = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
+    
+    # accept the friend request
     friend_request.accept()
     return redirect('friendList')
 
 @login_required(login_url='/login/')
 def declineFriendRequest(request, requestId):
+    # get the friend request object
     friend_request = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
+    
+    # decline the friend request
     friend_request.decline()
     return redirect('friendList')
 
 @login_required(login_url='/login/')
 def cancelFriendRequest(request, requestId):
+    # get the friend request object
     friend_request = get_object_or_404(FriendRequest, id=requestId, sender=request.user)
+    
+    # cancel the friend request
     friend_request.cancel()
     return redirect('friendList')
+
+@login_required(login_url='/login/')
+def setDistancePreference(request):
+    if request.method == 'POST':
+        # handle post method for setting distance preference
+        form = DistancePreferenceForm(request.POST)
+        if form.is_valid():
+            # update user's distance preference
+            distanceSelected = form.cleaned_data.get('distance')
+            userData = UserData.objects.get(djangoUser=request.user)
+            userData.distancePreference = distanceSelected
+            userData.save()
+            return redirect('friendList')
+
+    context = {'form': form}
+    return render(request, 'friendList.html', context)

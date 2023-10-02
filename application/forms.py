@@ -32,3 +32,12 @@ class JoinForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
+
+class DistancePreferenceForm(forms.Form):
+    distance = forms.ChoiceField(choices=[
+        (1, 'exact'),
+        (2, '500m'),
+        (3, '1000m'),
+        (4, '2500m'),
+        (5, '5000m'),
+    ])
