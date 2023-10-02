@@ -16,4 +16,5 @@ urlpatterns = [
     path('declineFriendRequest/<int:requestId>/', app_views.declineFriendRequest, name='declineFriendRequest'),
     path('cancelFriendRequest/<int:requestId>/', app_views.cancelFriendRequest, name='cancelFriendRequest'),
     path('removeFriend/<int:friendId>/', app_views.removeFriend, name='removeFriend'),
+    path('setDistancePreference/', app_views.setDistancePreference, name='setDistancePreference'),
 ]

@@ -60,8 +60,8 @@
         navigator.geolocation.getCurrentPosition(
           function (position) {
             // Enable the submit button and set the latitude and longitude values
-            lng.value = position.coords.latitude;
-            lat.value = position.coords.longitude;
+            lng.value = position.coords.longitude;
+            lat.value = position.coords.latitude;
             document.getElementById("submitBtn").disabled = false;
           },
           function (error) {

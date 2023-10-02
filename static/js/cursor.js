@@ -24,6 +24,7 @@ circles.forEach(function (circle, index) {
 });
 
 window.addEventListener("mousemove", function(e){
+  e.stopPropagation();
   coords.x = e.clientX;
   coords.y = e.clientY;
   

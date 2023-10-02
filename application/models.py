@@ -63,7 +63,7 @@ class UserData(models.Model):
     #store location in "latitude" and "longitude"
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
-    
+    distancePreference = models.IntegerField(default=1)
     friends = models.ManyToManyField('self', blank=True)
 
     def __str__(self) -> str:
@@ -83,7 +83,8 @@ class UserData(models.Model):
             coords = {
                 'username': friend.username,
                 'latitude': user_data_instance.latitude,
-                'longitude': user_data_instance.longitude
+                'longitude': user_data_instance.longitude,
+                'distancePreference': user_data_instance.distancePreference
             }
             coords_list.append(coords)
 
