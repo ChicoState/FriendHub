@@ -5,14 +5,14 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.01"/>
   </head>
   <body>
-    <div class = "home-label">
-      <a href="/">
-        <img title = "return home" src="{%static 'images/home-icon.svg' %}">
-      </a>
-    </div>
+    <a href="/">
+      <div class = "home-label">
+          <img title = "return home" src="{% static 'images/home.svg' %}">
+      </div>
+    </a>
     <div id="map"></div>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
@@ -62,28 +62,27 @@
             infoWindow.open(map);
         });
        
-        var friendNames = "{{ friends_first_name }}";
-        var friendLats = "{{ friends_lat }}";
-        var friendsLong = "{{ friends_long }}"
+        // var friendNames = "{{ friends_first_name }}";
+        // var friendLats = "{{ friends_lat }}";
+        // var friendsLong = "{{ friends_long }}"
 
-        for(var i=0; i<friendNames.length; i++) {
-          // Create a circle with a radius of 100 meters
+        // for(var i=0; i<friendNames.length; i++) {
+        //   // Create a circle with a radius of 100 meters
 
-          friend_pos = { lat: friendsLats[i], lng: friendsLong[i]};
+        //   friend_pos = { lat: friendsLats[i], lng: friendsLong[i]};
 
-          friend_circle = new google.maps.Circle({
-            map: map,
-            center: friend_pos,
-            radius: 100, // in meters
-            fillColor: "#007bff", // fill color of the circle
-            fillOpacity: 0.2,    // opacity of the fill
-            strokeColor: "#007bff", // border color
-            strokeOpacity: 0.8,      // opacity of the border
-            clickable: true,
-            strokeWeight: 2,     // border thickness
-          });
-        }
-        // Add a mouseover event listener to the circle to display the tooltip
+        //   friend_circle = new google.maps.Circle({
+        //     map: map,
+        //     center: friend_pos,
+        //     radius: 100, // in meters
+        //     fillColor: "#007bff", // fill color of the circle
+        //     fillOpacity: 0.2,    // opacity of the fill
+        //     strokeColor: "#007bff", // border color
+        //     strokeOpacity: 0.8,      // opacity of the border
+        //     clickable: true,
+        //     strokeWeight: 2,     // border thickness
+        //   });
+        // }
       }
 
       window.initMap = initMap;
