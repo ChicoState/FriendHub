@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    cursor: none !important;
 }
 
 body {
@@ -100,7 +101,8 @@ form input:not(:last-child):focus {
 }
 
 #submitBtn:hover{
-    transform: scale(1.01);
+    /* transform: scale(1.01); */
+    background: #3b5e9c;
 }
 
 form label{
@@ -114,6 +116,10 @@ a {
     color: #FFFAFF;
     font: inherit;
     text-align: center;
+}
+
+a:hover{
+    color: #cac5ca;
 }
 
 .pageLabelWrapper, .pageLabel{
@@ -142,3 +148,13 @@ a {
 .pageLabel p {
     transform: skew(12deg);
 }
+
+.circle {
+    height: 20px;
+    width: 20px;
+    border-radius: 24px;
+    background-color: black;
+    position: fixed; 
+    pointer-events: none;
+    z-index: 3; /* so that it stays on top of all other elements */
+  }

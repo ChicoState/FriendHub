@@ -5,14 +5,27 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.01"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.02"/>
   </head>
   <body>
-    <a href="/">
-      <div class = "home-label">
-          <img title = "return home" src="{% static 'images/home.svg' %}">
-      </div>
-    </a>
+    {% include "cursorWave.html" %}
+    <a href = "/map">
+        <img title = "FriendHub Home" class = "home" style = "background: white;  border-radius: 50%; transition: 150ms ease-in-out; margin: 15px; position: absolute; height: 90px; width: 90px; z-index: 2;" src = "/static/images/logo.svg" /> </div>
+    </a>    
+    <div class="icons-container">
+        <div class = "fPage">
+            <a href="/friendList" class="home-label">
+                <img title="view friends page" src="{% static 'images/friend.svg' %}" >
+            </a>
+            <p>friends</p>
+        </div>
+        <div class = "fPage">
+            <a href="/logout" class="home-label">
+                <img title="logout" src="{% static 'images/logout.svg' %}">
+            </a>
+            <p>logout</p>
+        </div>
+    </div>    
     <div id="map"></div>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
@@ -22,13 +35,9 @@
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 13,
             center: position,
-            mapTypeControl: true,
+            mapTypeControl: false,
             fullscreenControl: false,
             streetViewControl: false,
-            mapTypeControlOptions: {
-                style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                position: google.maps.ControlPosition.TOP_RIGHT
-            }
         });
 
         function getRadiusFromPreference(preference) {
@@ -93,5 +102,6 @@
     }
     window.initMap = initMap;
     </script>
-  </body>
+    </body>
+    <script src="../static/js/cursor.js"></script>
 </html>

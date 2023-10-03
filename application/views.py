@@ -15,7 +15,7 @@ from application.models import UserData
 
 @login_required(login_url='/login/')
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'map.html')
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -25,7 +25,16 @@ from .models import UserData
 def map(request):
     # Get the user's data instance
     user_data = UserData.objects.get(djangoUser=request.user)
-
+    # retrieve friend requests for the current user
+    friendRequestsReceived = FriendRequest.objects.filter(receiver=request.user)
+    friendRequestsSent = FriendRequest.objects.filter(sender=request.user)
+    # get or create friendlist for the current user
+    friends, _ = FriendList.objects.get_or_create(user=request.user)
+    # get user data for current user
+    user_data = UserData.objects.get(djangoUser=request.user)
+    currentDistancePreference = user_data.distancePreference
+    # instantiate the distance preference form
+    form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
     # Get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
@@ -36,23 +45,17 @@ def map(request):
     # Get the friend's details using the get_friends_coordinates function
     friends_details = user_data.get_friends_coordinates()
 
-    # Print the friends' details to the console
-    for friend in friends_details:
-        print("Name:", friend['username'])
-        print("Latitude:", friend['latitude'])
-        print("Longitude:", friend['longitude'])
-        print("Distance Preference:", friend['distancePreference'])
-        print("-" * 40)  # Separating line
-
     context = {
         'username': username,
         'firstname': firstname,
         'latitude': latitude,
         'longitude': longitude,
         'distance_preference': distance_preference,
-        'friends_details': friends_details
+        'friends_details': friends_details,
+        'friendRequestsSent': friendRequestsSent,
+        'friends': friends.friends.all(),
+        'form': form
     }
-
     return render(request, 'map.html', context)
 
 def join(request):
@@ -77,7 +80,7 @@ def join(request):
             )
             new_user.save()
             # success
-            return redirect("/")
+            return redirect("/map")
         else:
             # invalid form
             page_data = { "join_form": jform }
@@ -105,7 +108,7 @@ def user_login(request):
                 if user.is_active:
                     # log in the user and redirect to the home page
                     login(request, user)
-                    return redirect("/")
+                    return redirect("/map")
                 else:
                     # return an HttpResponse indicating that the account is not active
                     return HttpResponse("This account is not active.")
@@ -119,7 +122,7 @@ def user_login(request):
 @login_required(login_url='/login/')
 def user_logout(request):
     logout(request)
-    return redirect("/")
+    return redirect("/login/")
 
 @login_required(login_url='/login/')
 def loadMapAPI(request):

@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  cursor: none;
+  cursor: none !important;
 }
 
 body {
@@ -67,36 +67,61 @@ body {
 
 /* Back Button */
 
+.icons-container {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; /* Use flexbox to lay out the child elements in a row */
+  gap: 5rem; /* Space between child elements */
+  background-color: #0028BB;
+  padding: 1rem 2rem 1rem 2rem;
+  z-index: 2;
+  border-radius: 5px;
+}
+
+.home-label {
+  display: flex;
+  align-items: center; /* Align image and text vertically */
+}
+
 .home-label img {
   width: 2rem;
   height: 2rem;
-  opacity: 50%;
-  transition: 100ms ease-in-out;
+  opacity: 75%;
+  transition: 150ms ease-in-out;
 }
 
-
-.home-label:hover img{
+.home-label:hover img {
   opacity: 100%;
+  transform: scale(1.02);
 }
 
-.home-label{
-  font-family: 'Times New Roman', Times, serif;
-  z-index: 2;
-  position: absolute;
-  margin-top: 1rem;
-  margin-left: 1rem;
-  user-select: none;
-  background-color: rgba(16,16,28,.4);
+p {
+  opacity: 75%;
+  font-size: .5rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;    
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0;
   color: #fff;
-  border-radius: 15%;
-  overflow: hidden;
-  /* padding: 0.3rem .5rem; */
-  padding: 0.3rem .5rem 0rem .5rem;
+  padding-top: 0.1rem;
+}
+
+.fPage{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
 }
 
 /* Body */
 
 .container {
+  color: #2b2d42;
   display: flex;
   height: 100%;
   width: 100%;
@@ -104,8 +129,9 @@ body {
 }
 
 .friends-section {
-  padding-top: 5vh;
-  background-color: #0037feb9;
+  padding-top: 100px;
+  /* background-color: rgb(231, 231, 231);  */
+  background-color: #edf2f4;
   display: flex;
   flex-direction: column;
   padding-left: 1rem; 
@@ -114,6 +140,19 @@ body {
   max-width: 20%; 
   padding-right: 2rem;
   height: 100%;
+}
+
+.friends-section h2 {
+  margin-top: 0.3rem;
+}
+
+.home {
+  opacity: 90%;
+}
+
+.home:hover{
+  transform: scale(1.02);
+  opacity: 100%;
 }
 
 h2 {
@@ -243,11 +282,11 @@ a {
 }
 
 .remove:hover {
-  color: rgb(184, 12, 12);
+  color: #b80c0c;
 }
 
 .accept {
-  color: green;
+  color: #008000;
   padding-right: 5px;
 }
 
