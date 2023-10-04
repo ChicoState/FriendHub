@@ -27,6 +27,15 @@
         </div>
     </div>    
     <div id="map"></div>
+
+    //map style selectors
+    <select id="map-type-select"> 
+        <option value="roadmap">Roadmap</option>
+        <option value="satellite">Satellite</option>
+        <option value="hybrid">Hybrid</option>
+        <option value="terrain">Terrain</option>
+    </select>
+
     <script src="{% url 'gMap' %}" defer></script>
     <script>
     function initMap() {
@@ -38,6 +47,15 @@
             mapTypeControl: false,
             fullscreenControl: false,
             streetViewControl: false,
+        });
+
+        // Get the dropdown element
+        const mapTypeSelect = document.getElementById("map-type-select");
+
+        // Add an event listener to update the map type when the user makes a selection
+        mapTypeSelect.addEventListener("change", function () {
+            const selectedMapType = mapTypeSelect.value;
+            map.setMapTypeId(selectedMapType);
         });
 
         function getRadiusFromPreference(preference) {
