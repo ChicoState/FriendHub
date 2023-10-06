@@ -62,7 +62,7 @@ p {
   display: flex;
   align-items: center;
   height: 100%;
-  width: 50%;
+  width: 2.5rem;
   flex-direction: column;
 }
 
