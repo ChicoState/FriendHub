@@ -1,0 +1,128 @@
+<html>
+<head>
+    {% load static %}
+    {% include "header.html" %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.01"/>
+</head>
+<body id>
+    <a href = "/map">
+        <img title = "FriendHub Home" class = "home" style = "background: white;  border-radius: 50%; transition: 150ms ease-in-out; margin: 15px; position: absolute; height: 90px; width: 90px; z-index: 2;" src = "/static/images/logo.svg" /> </div>
+    </a>
+    <div class="icons-container">
+        <div class = "fPage">
+        <a href="/map">
+            <div class = "home-label">
+                <img title = "return to map" src="{% static 'images/map.svg' %}">
+            </div>
+        </a>
+        <p>map</p>
+        </div>
+        <div class = "fPage">
+            <a href="/logout" class="home-label">
+                <img title="logout" src="{% static 'images/logout.svg' %}">
+            </a>
+            <p>logout</p>
+        </div>
+    </div>
+    {% include "cursorWave.html" %}
+    <div class="container">
+        <form method="post" action="{% url 'setDistancePreference' %}">
+            {% csrf_token %}
+            <div class="distance-selector">
+                <label for="{{ form.distance.idForLabel }}">how much do you want to show? </label>
+                {{ form.distance }}
+                <input id="leftAlignedSubmit" type="submit" value="submit">
+            </div>
+        </form>        
+        <div class="friends-section">
+            <h2>Current Friends</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for friend in friends %}
+                    <tr>
+                        <td>{{ friend.username }}</td>
+                        <td>
+                            <a class ="remove" href="{% url 'removeFriend' friend.id %}">remove</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>    
+            </table>    
+        </div>
+
+        <div class="requests-section">
+            <div class = "friendsDiv">
+                <h2>Send a Friend Request</h2>
+                <div class="messages-wrapper">
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+            
+                    <form action="{% url 'sendFriendRequest' %}" autocomplete="off" method="post">
+                        {% csrf_token %}
+                        <div class="input-wrapper">
+                            <input autocomplete="off" type="text" name="username1" placeholder="Friend Username">
+                            <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </form>
+                </div> 
+            </div>
+            <div class = "requestsContainer">
+                <div class = "FrContainer">
+                    <h2>Received Friend Requests</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in friendRequestsReceived %}
+                            <tr>
+                                <td>{{ request.sender.username }}</td>
+                                <td>
+                                    <a class = "accept" href="{% url 'acceptFriendRequest' request.id %}">accept</a>
+                                    <a class = "remove" href="{% url 'declineFriendRequest' request.id %}">deny</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class = "FrContainer">
+                    <h2>Sent Friend Requests</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for request in friendRequestsSent %}
+                            <tr>
+                                <td>{{ request.receiver.username }}</td>
+                                <td><a class ="remove" href="{% url 'cancelFriendRequest' request.id %}">cancel</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../static/js/cursor.js"></script>
+</html>

@@ -1,10 +1,86 @@
+* {
+  cursor: none !important;
+}
 #map {
     height: 100%;
     width: 100%;
-  }
+}
 
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    position: relative;
+    cursor: none;
   }
+
+.icons-container {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; /* Use flexbox to lay out the child elements in a row */
+    gap: 5rem; /* Space between child elements */
+    background-color: #0028BB;
+    padding: 1rem 2rem 1rem 2rem;
+    z-index: 2;
+    border-radius: 5px;
+}
+
+.home-label {
+    display: flex;
+    align-items: center; /* Align image and text vertically */
+}
+
+.home-label img {
+    width: 2rem;
+    height: 2rem;
+    opacity: 75%;
+    transition: 150ms ease-in-out;
+}
+
+p {
+  opacity: 75%;
+  font-size: .5rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;    
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  padding-top: 0.1rem;
+}
+
+.home-label:hover img {
+  opacity: 100%;
+  transform: scale(1.02);
+}
+
+.fPage{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 50%;
+  flex-direction: column;
+}
+
+.home {
+  opacity: 90%;
+}
+
+.home:hover{
+  transform: scale(1.02);
+  opacity: 100%;
+}
+
+.circle {
+  height: 20px;
+  width: 20px;
+  border-radius: 24px;
+  background-color: black;
+  position: fixed; 
+  pointer-events: none;
+  z-index: 3; /* so that it stays on top of all other elements */
+}
