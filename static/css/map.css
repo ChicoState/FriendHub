@@ -61,8 +61,8 @@ p {
 .fPage{
   display: flex;
   align-items: center;
-  height: 100%;
-  width: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
   flex-direction: column;
 }
 

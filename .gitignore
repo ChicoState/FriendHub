@@ -136,5 +136,8 @@ GitHub.sublime-settings
 .history
 
 
+db.sqlite3
+
+
 # Shell Scripts
 test.sh
