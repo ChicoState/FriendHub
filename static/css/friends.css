@@ -74,10 +74,11 @@ body {
   transform: translateX(-50%);
   display: flex; /* Use flexbox to lay out the child elements in a row */
   gap: 5rem; /* Space between child elements */
-  background-color: #0028BB;
+  /* background-color: #0028BB; */
+  background-color: #0035fe;
   padding: 1rem 2rem 1rem 2rem;
   z-index: 2;
-  border-radius: 5px;
+  border-radius: 25px;
 }
 
 .home-label {
@@ -205,7 +206,6 @@ h2 {
 
 form input {
   background-color: rgba(255, 255, 255, 0.7); 
-  /* background-color: #E7ECEF; */
   padding: 10px 20px 10px 10px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -220,16 +220,17 @@ form input:focus{
 }
 
 form button {
-  background: #0037feb9;
+  /* background: #0037feb9; */
+  background: #0035fe;
   border: none;
-  padding: 10px 20px; 
+  padding: 11px 20px; 
   color: #fff;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
 form button:hover {
-  background: #0037fed3;
+  background: rgba(2, 52, 235, 0.827)
 }
 
 table {

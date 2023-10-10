@@ -23,7 +23,7 @@
        {{ login_form }}
         {% csrf_token %}
         {% if correct == False %}
-        <p style = "color:rgb(209, 64, 64);">Invalid Username and or Password</p>
+        <p style = "font-size: .75rem; color:rgb(209, 64, 64);">invalid username and or password</p>
         {% endif %}
         <input id = "submitBtn" type="submit"  value = "Login"/>
         <a href="/join">create an account</a>
