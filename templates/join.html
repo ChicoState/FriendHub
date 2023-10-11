@@ -2,7 +2,7 @@
   <head>
     {% load static %}
     {% include "header.html" %}
-    <link rel="stylesheet" href="{%static 'css/form.css' %}?v=1" />
+    <link rel="stylesheet" href="{%static 'css/form.css' %}?v=1.01" />
   </head>
   <body style = "position: relative;">
     {% include "cursorWave.html" %}
@@ -23,10 +23,8 @@
         <form method="POST">
           {% csrf_token %}
           {{ join_form.as_table }}
-          <div class = "inputWrapper">
-            <input id = "submitBtn" type="submit" value = "Sign Up" disabled/>
-          </div>
-          <a href="/login">already have an account?</a>
+          <input id = "submitBtn" type="submit" value = "Sign Up" disabled/>
+          <a style = "z-index: 1;" href="/login">already have an account?</a>
         </form>
       </div>
     </div>

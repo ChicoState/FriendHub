@@ -158,3 +158,12 @@ a:hover{
     pointer-events: none;
     z-index: 3; /* so that it stays on top of all other elements */
   }
+
+ul, li {
+    list-style: none;
+    text-transform: lowercase;
+    color:rgb(209, 64, 64);
+    font-size: .75rem;
+    margin: 0;
+    padding: 0;
+}
