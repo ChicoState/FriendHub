@@ -85,58 +85,22 @@ p {
   z-index: 3; /* so that it stays on top of all other elements */
 }
 
-/* toggle button to swtich map themes */
-.toggle-container {
-  display: flex;
-  align-items: center;
-  margin: 20px;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.slider {
+.map-control {
   position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 34px;
+  top: 0px;
+  right: 0px;
+  margin: 10px;
+  z-index: 1;
+  border: none;
+  border-radius: 5px;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
+.selector-control {
+  background-color: rgba(255, 255, 255, 0.7); 
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 30px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-family: 'Poppins', sans-serif;    
 }
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-
