@@ -25,17 +25,15 @@
             </a>
             <p>logout</p>
         </div>
+        <div class="toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch">
+                <span class="slider"></span>
+            </label>
+                <p>Night Mode</p>
+        </div>
     </div>    
     <div id="map"></div>
-
-    //map style selectors
-    <select id="map-type-select"> 
-        <option value="roadmap">Roadmap</option>
-        <option value="satellite">Satellite</option>
-        <option value="hybrid">Hybrid</option>
-        <option value="terrain">Terrain</option>
-    </select>
-
     <script src="{% url 'gMap' %}" defer></script>
     <script>
     function initMap() {
@@ -129,13 +127,18 @@
             streetViewControl: false,
         });
 
-        // Get the dropdown element
-        const mapTypeSelect = document.getElementById("map-type-select");
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleSwitch = document.getElementById("toggleSwitch");
 
-        // Add an event listener to update the map type when the user makes a selection
-        mapTypeSelect.addEventListener("change", function () {
-            const selectedMapType = mapTypeSelect.value;
-            map.setMapTypeId(selectedMapType);
+            toggleSwitch.addEventListener("change", function () {
+            if (toggleSwitch.checked) {
+                // Toggle is ON, perform action here
+                console.log("Toggle is ON");
+            } else {
+                // Toggle is OFF, perform action here
+                console.log("Toggle is OFF");
+            }
+            });
         });
 
         function getRadiusFromPreference(preference) {
