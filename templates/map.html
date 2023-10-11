@@ -5,7 +5,7 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.02"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.03"/>
   </head>
   <body>
     {% include "cursorWave.html" %}
@@ -25,10 +25,235 @@
             </a>
             <p>logout</p>
         </div>
-    </div>    
+    </div>
+    <div id="style-selector-control" class="map-control">
+        <select id="style-selector" class="selector-control">
+          <option value = "">Select a style</option>
+          <option value="default">Default</option>
+          <option value="night">Night mode</option>
+          <option value="retro">Retro</option>
+        </select>
+      </div>    
     <div id="map"></div>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
+    const styles = {
+        default: [], 
+        night: [
+            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+            {
+                featureType: "administrative.locality",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+            },
+            {
+                featureType: "poi",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "geometry",
+                stylers: [{ color: "#263c3f" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#6b9a76" }],
+            },
+            {
+                featureType: "road",
+                elementType: "geometry",
+                stylers: [{ color: "#38414e" }],
+            },
+            {
+                featureType: "road",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#212a37" }],
+            },
+            {
+                featureType: "road",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#9ca5b3" }],
+            },
+            {
+                featureType: "road.highway",
+                elementType: "geometry",
+                stylers: [{ color: "#746855" }],
+            },
+            {
+                featureType: "road.highway",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#1f2835" }],
+            },
+            {
+                featureType: "road.highway",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#f3d19c" }],
+            },
+            {
+                featureType: "transit",
+                elementType: "geometry",
+                stylers: [{ color: "#2f3948" }],
+            },
+            {
+                featureType: "transit.station",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#d59563" }],
+            },
+            {
+                featureType: "water",
+                elementType: "geometry",
+                stylers: [{ color: "#17263c" }],
+            },
+            {
+                featureType: "water",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#515c6d" }],
+            },
+            {
+                featureType: "water",
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#17263c" }],
+            },
+            {
+                featureType: "road",
+                elementType: "labels.icon",
+                stylers: [{ visibility: "off" }],
+            },
+        ],
+        retro: [
+            { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
+            { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
+            { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
+            {
+                featureType: "administrative",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#c9b2a6" }],
+            },
+            {
+                featureType: "administrative.land_parcel",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#dcd2be" }],
+            },
+            {
+                featureType: "administrative.land_parcel",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#ae9e90" }],
+            },
+            {
+                featureType: "landscape.natural",
+                elementType: "geometry",
+                stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+                featureType: "poi",
+                elementType: "geometry",
+                stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+                featureType: "poi",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#93817c" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "geometry.fill",
+                stylers: [{ color: "#a5b076" }],
+            },
+            {
+                featureType: "poi.park",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#447530" }],
+            },
+            {
+                featureType: "road",
+                elementType: "geometry",
+                stylers: [{ color: "#f5f1e6" }],
+            },
+            {
+                featureType: "road.arterial",
+                elementType: "geometry",
+                stylers: [{ color: "#fdfcf8" }],
+            },
+            {
+                featureType: "road.highway",
+                elementType: "geometry",
+                stylers: [{ color: "#f8c967" }],
+            },
+            {
+                featureType: "road.highway",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#e9bc62" }],
+            },
+            {
+                featureType: "road.highway.controlled_access",
+                elementType: "geometry",
+                stylers: [{ color: "#e98d58" }],
+            },
+            {
+                featureType: "road.highway.controlled_access",
+                elementType: "geometry.stroke",
+                stylers: [{ color: "#db8555" }],
+            },
+            {
+                featureType: "road.local",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#806b63" }],
+            },
+            {
+                featureType: "transit.line",
+                elementType: "geometry",
+                stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+                featureType: "transit.line",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#8f7d77" }],
+            },
+            {
+                featureType: "transit.line",
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#ebe3cd" }],
+            },
+            {
+                featureType: "transit.station",
+                elementType: "geometry",
+                stylers: [{ color: "#dfd2ae" }],
+            },
+            {
+                featureType: "water",
+                elementType: "geometry.fill",
+                stylers: [{ color: "#b9d3c2" }],
+            },
+            {
+                featureType: "water",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#92998d" }],
+            },
+            {
+                featureType: "road",
+                elementType: "labels.icon",
+                stylers: [{ visibility: "off" }],
+            },
+        ],
+    };
+
+    // this function checks if a theme is stored in local storage and sets it as the selected option.
+    function loadMapThemeFromLocalStorage() {
+        const storedTheme = localStorage.getItem('mapTheme');
+        if (storedTheme && document.getElementById('style-selector').value != "") {
+          document.getElementById('style-selector').value = storedTheme;
+        }
+    }
+
+    // this function saves the selected theme to local storage.
+    function saveMapThemeToLocalStorage(theme) {
+        localStorage.setItem('mapTheme', theme);
+    }
+
     function initMap() {
         const position = { lat: {{ latitude|safe }}, lng: {{ longitude|safe }} };
         // Initialize map centered at the given position
@@ -101,8 +326,32 @@
                 console.error("BRUUUHHHH");
             }
         }
-    }
-    window.initMap = initMap;
+        // add a style-selector control to the map.
+        const styleControl = document.getElementById("style-selector-control");
+
+        // set the map's style to the initial value of the selector.
+        const styleSelector = document.getElementById('style-selector');
+        
+        // check if a theme is stored in local storage and apply it.
+        const storedTheme = localStorage.getItem('mapTheme');
+        if (storedTheme) {
+          styleSelector.value = storedTheme;
+          map.setOptions({ styles: styles[storedTheme] });
+        } else {
+          map.setOptions({ styles: styles[styleSelector.value] });
+        }
+
+        // apply new JSON when the user selects a different style.
+        styleSelector.addEventListener('change', () => {
+          if(document.getElementById('style-selector').value != ""){
+            map.setOptions({ styles: styles[styleSelector.value] });
+            saveMapThemeToLocalStorage(styleSelector.value); // Save the selected theme to local storage.
+          }
+        });
+      }
+
+      window.initMap = initMap;
+      window.onload = loadMapThemeFromLocalStorage; // Load the theme from local storage when the window is loaded
     </script>
     </body>
     <script src="../static/js/cursor.js"></script>
