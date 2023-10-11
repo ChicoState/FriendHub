@@ -21,10 +21,11 @@ html, body {
     transform: translateX(-50%);
     display: flex; /* Use flexbox to lay out the child elements in a row */
     gap: 5rem; /* Space between child elements */
-    background-color: #0028BB;
+    /* background-color: #0028BB; */
+    background-color: #0035fe;
     padding: 1rem 2rem 1rem 2rem;
     z-index: 2;
-    border-radius: 5px;
+    border-radius: 25px;
 }
 
 .home-label {
@@ -61,8 +62,8 @@ p {
 .fPage{
   display: flex;
   align-items: center;
-  height: 100%;
-  width: 50%;
+  height: 2.5rem;
+  width: 2.5rem;
   flex-direction: column;
 }
 
