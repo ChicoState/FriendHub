@@ -56,6 +56,7 @@
             for (let friend of friendsDetails) {
             try {
                 const friend_position = { lat: friend.latitude, lng: friend.longitude };
+                
                 // If the user wants their exact location shown
                 if (friend.distancePreference === 1) {
                     new google.maps.Marker({
@@ -66,13 +67,14 @@
                 } else {
                     // User does not want exact location shown so make a radius
                     const friend_radius = getRadiusFromPreference(friend.distancePreference);
+                    const color_pref = friend.colorPreference;
                     const circle = new google.maps.Circle({
                         map: map,
                         center: friend_position,
                         radius: friend_radius,
-                        fillColor: "#007bff",
+                        fillColor:colorPreference,
                         fillOpacity: 0.2,
-                        strokeColor: "#007bff",
+                        strokeColor: colorPreference,
                         strokeOpacity: 0.8,
                         clickable: true,
                         strokeWeight: 2,

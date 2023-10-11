@@ -64,6 +64,7 @@ class UserData(models.Model):
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
     distancePreference = models.IntegerField(default=1)
+    colorPreference = models.CharField(max_length=10, default ='#007bff')
     friends = models.ManyToManyField('self', blank=True)
 
     def __str__(self) -> str:

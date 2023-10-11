@@ -34,7 +34,15 @@
                 {{ form.distance }}
                 <input id="leftAlignedSubmit" type="submit" value="submit">
             </div>
-        </form>        
+        </form>
+        <form method="post" action="{% url 'setColorPreference' %}">
+            {% csrf_token %}
+            <div class = "color-selector">
+                <label for="{{form.color.idForLabel}}">pick your color</label>
+                {{form.color}}
+                <input id="leftAlignedSubmit" type="submit" value="submit">
+            </div>
+        </form>"        
         <div class="friends-section">
             <h2>Current Friends</h2>
             <table>

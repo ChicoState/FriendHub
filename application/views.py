@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from application.forms import JoinForm, LoginForm, DistancePreferenceForm
+from application.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import UserData, FriendRequest, FriendList
@@ -257,3 +257,16 @@ def setDistancePreference(request):
 
     context = {'form': form}
     return render(request, 'friendList.html', context)
+
+@login_required(login_url='/login')
+def setColorPreference(request):
+    if request.method == 'POST':
+        # handle post method for setting color preference
+        form = ColorPreferenceForm(request.POST)
+        if form.is_valid():
+            #update users color preference
+            colorSelected = form.cleaned_data.get('color')
+            userData = UserData.objects.get(djangoUser=request.user)
+            userData.colorPreference = colorSelected
+            userData.save()
+            return redirect('friendList')
