@@ -293,13 +293,24 @@
                 console.log(friend)
             try {
                 const friend_position = { lat: friend.latitude, lng: friend.longitude };
+                const color_pref = getColorFromPreference(friend.color);
                 
                 // If the user wants their exact location shown
                 if (friend.distancePreference === 1) {
+                    // Create a custom marker icon with the desired color
+                    var customMarkerIcon = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: `${color_pref}`,  // Change 'red' to the desired color
+                    fillOpacity: 1,
+                    strokeColor: 'black',
+                    strokeWeight: 2,
+                    scale: 8  // Adjust the size of the marker as needed
+                    };
                     new google.maps.Marker({
                         position: friend_position,
                         map: map,
-                        title: `${friend.username} is here`
+                        title: `${friend.username} is here`,
+                        icon: customMarkerIcon
                     });
                 } else {
                     // User does not want exact location shown so make a radius
