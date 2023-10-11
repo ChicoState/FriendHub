@@ -35,6 +35,7 @@ def map(request):
     currentDistancePreference = user_data.distancePreference
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
+
     # Get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
@@ -143,15 +144,20 @@ def friendList(request):
     # get user data for current user
     user_data = UserData.objects.get(djangoUser=request.user)
     currentDistancePreference = user_data.distancePreference
+    currentColorPreference = user_data.colorPreference
     
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
-    
+
+    colorForm = ColorPreferenceForm(initial={'color': currentColorPreference})
+
+
     context = {
         'friendRequestsReceived': friendRequestsReceived,
         'friendRequestsSent': friendRequestsSent,
         'friends': friends.friends.all(),
-        'form': form
+        'form': form,
+        'colorForm': colorForm
     }
     
     return render(request, 'friendList.html', context)
@@ -269,4 +275,5 @@ def setColorPreference(request):
             userData = UserData.objects.get(djangoUser=request.user)
             userData.colorPreference = colorSelected
             userData.save()
+            print(colorSelected)
             return redirect('friendList')
