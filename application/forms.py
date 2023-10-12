@@ -41,3 +41,11 @@ class DistancePreferenceForm(forms.Form):
         (4, '2500m'),
         (5, '5000m'),
     ])
+
+class ColorPreferenceForm(forms.Form):
+    color = forms.ChoiceField(choices=[
+        (1, 'Blue'),
+        (2, 'Red'),
+        (3, 'Green'),
+        (4, 'Pink'),
+    ])

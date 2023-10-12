@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from application.forms import JoinForm, LoginForm, DistancePreferenceForm
+from application.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import UserData, FriendRequest, FriendList
@@ -35,6 +35,7 @@ def map(request):
     currentDistancePreference = user_data.distancePreference
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
+
     # Get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
@@ -143,15 +144,20 @@ def friendList(request):
     # get user data for current user
     user_data = UserData.objects.get(djangoUser=request.user)
     currentDistancePreference = user_data.distancePreference
+    currentColorPreference = user_data.colorPreference
     
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
-    
+
+    colorForm = ColorPreferenceForm(initial={'color': currentColorPreference})
+
+
     context = {
         'friendRequestsReceived': friendRequestsReceived,
         'friendRequestsSent': friendRequestsSent,
         'friends': friends.friends.all(),
-        'form': form
+        'form': form,
+        'colorForm': colorForm
     }
     
     return render(request, 'friendList.html', context)
@@ -257,3 +263,17 @@ def setDistancePreference(request):
 
     context = {'form': form}
     return render(request, 'friendList.html', context)
+
+@login_required(login_url='/login')
+def setColorPreference(request):
+    if request.method == 'POST':
+        # handle post method for setting color preference
+        form = ColorPreferenceForm(request.POST)
+        if form.is_valid():
+            #update users color preference
+            colorSelected = form.cleaned_data.get('color')
+            userData = UserData.objects.get(djangoUser=request.user)
+            userData.colorPreference = colorSelected
+            userData.save()
+            print(colorSelected)
+            return redirect('friendList')

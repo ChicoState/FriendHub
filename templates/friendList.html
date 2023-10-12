@@ -3,7 +3,7 @@
     {% load static %}
     {% include "header.html" %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
-    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.01"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.02"/>
 </head>
 <body id>
     <a href = "/map">
@@ -32,6 +32,14 @@
             <div class="distance-selector">
                 <label for="{{ form.distance.idForLabel }}">how much do you want to show? </label>
                 {{ form.distance }}
+                <input id="leftAlignedSubmit" type="submit" value="submit">
+            </div>
+        </form>
+        <form method="post" action="{% url 'setColorPreference' %}">
+            {% csrf_token %}
+            <div class = "color-selector">
+                <label for="{{colorForm.color.idForLabel}}">pick your color</label>
+                {{colorForm.color}}
                 <input id="leftAlignedSubmit" type="submit" value="submit">
             </div>
         </form>        

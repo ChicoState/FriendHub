@@ -275,29 +275,55 @@
                 default: return 100;   // Default to 100m
             }
         }
+        
+        function getColorFromPreference(color) {
+            console.log(color);
+            switch (color) {
+                case 1: return '#007bff'; //blue      
+                case 2: return '#DC2D07'; //red
+                case 3: return '#234F1E'; //aqua
+                case 4: return '#F506FF'; //pink
+                default: return '#007bff'; //blue
+            }
+        }
 
         // Handle friends' locations
         const friendsDetails = {{ friends_details|safe }};
             for (let friend of friendsDetails) {
+                console.log(friend)
             try {
                 const friend_position = { lat: friend.latitude, lng: friend.longitude };
+                const color_pref = getColorFromPreference(friend.color);
+                
                 // If the user wants their exact location shown
                 if (friend.distancePreference === 1) {
+                    // Create a custom marker icon with the desired color
+                    var customMarkerIcon = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: `${color_pref}`,  // Change 'red' to the desired color
+                    fillOpacity: 1,
+                    strokeColor: 'black',
+                    strokeWeight: 2,
+                    scale: 8  // Adjust the size of the marker as needed
+                    };
                     new google.maps.Marker({
                         position: friend_position,
                         map: map,
-                        title: `${friend.username} is here`
+                        title: `${friend.username} is here`,
+                        icon: customMarkerIcon
                     });
                 } else {
                     // User does not want exact location shown so make a radius
                     const friend_radius = getRadiusFromPreference(friend.distancePreference);
+                    const color_pref = getColorFromPreference(friend.color);
+                    console.log(color_pref);
                     const circle = new google.maps.Circle({
                         map: map,
                         center: friend_position,
                         radius: friend_radius,
-                        fillColor: "#007bff",
+                        fillColor:`${color_pref}`,
                         fillOpacity: 0.2,
-                        strokeColor: "#007bff",
+                        strokeColor: `${color_pref}`,
                         strokeOpacity: 0.8,
                         clickable: true,
                         strokeWeight: 2,
