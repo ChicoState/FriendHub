@@ -5,7 +5,7 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.03"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.04"/>
   </head>
   <body>
     {% include "cursorWave.html" %}
@@ -28,10 +28,10 @@
     </div>
     <div id="style-selector-control" class="map-control">
         <select id="style-selector" class="selector-control">
-          <option value = "">Select a style</option>
-          <option value="default">Default</option>
-          <option value="night">Night mode</option>
-          <option value="retro">Retro</option>
+          <option hidden value = "">loading style...</option>
+          <option value="default">default</option>
+          <option value="night">night mode</option>
+          <option value="retro">retro</option>
         </select>
       </div>    
     <div id="map"></div>
@@ -275,7 +275,7 @@
                 default: return 100;   // Default to 100m
             }
         }
-        
+
         function getColorFromPreference(color) {
             console.log(color);
             switch (color) {

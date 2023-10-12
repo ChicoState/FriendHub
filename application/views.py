@@ -11,15 +11,10 @@ import requests
 from django.db.models import Q
 from application.models import UserData
 import os
-from application.models import UserData
 
 @login_required(login_url='/login/')
 def home(request):
     return render(request, 'map.html')
-
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import UserData
 
 @login_required(login_url='/login/')
 def map(request):
@@ -275,5 +270,4 @@ def setColorPreference(request):
             userData = UserData.objects.get(djangoUser=request.user)
             userData.colorPreference = colorSelected
             userData.save()
-            print(colorSelected)
             return redirect('friendList')
