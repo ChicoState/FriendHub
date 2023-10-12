@@ -10,7 +10,7 @@ from django.contrib import messages
 import requests
 from django.db.models import Q
 from application.models import UserData
-import os
+import os, random, math
 
 @login_required(login_url='/login/')
 def home(request):
@@ -31,16 +31,15 @@ def map(request):
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
-    # Get the user's details
+    # get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
     latitude = user_data.latitude
     longitude = user_data.longitude
     distance_preference = user_data.distancePreference
 
-    # Get the friend's details using the get_friends_coordinates function
+    # get the friend's details using the get_friends_coordinates function
     friends_details = user_data.get_friends_coordinates()
-
     context = {
         'username': username,
         'firstname': firstname,

@@ -73,9 +73,9 @@
             switch (preference) {
                 case 1: return 0; // Exact location
                 case 2: return 500; // 500m
-                case 3: return 1000; // 1km
-                case 4: return 2500; // 2.5km
-                case 5: return 5000; // 5km
+                case 3: return 1000; // 1000m
+                case 4: return 2500; // 2500m
+                case 5: return 5000; // 5000m
                 default: return 100; // Default
             }
         }
@@ -166,7 +166,7 @@
     }
 
     window.initMap = initMap;
-    window.onload = loadMapThemeFromLocalStorage; // Load map theme when window loads
+    window.onload = loadMapThemeFromLocalStorage; // load map theme when window loads
     </script>
     </body>
     <script src="../static/js/cursor.js"></script>
