@@ -101,6 +101,13 @@ def user_login(request):
             if user:
                 # check if the user account is active
                 if user.is_active:
+                    # update to current lat/lng coords
+                    lat = lform.cleaned_data["lat"]
+                    lng = lform.cleaned_data["lng"]
+                    userData = UserData.objects.get(djangoUser = user)
+                    userData.latitude = lat
+                    userData.longitude = lng
+                    userData.save()
                     # log in the user and redirect to the home page
                     login(request, user)
                     return redirect("/map")

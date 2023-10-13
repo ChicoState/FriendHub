@@ -165,6 +165,15 @@
         });
     }
 
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function temp(){},
+            function(error) {
+                // can't get location log em out
+                window.location.href = '/logout';
+            }
+        );
+    }
     window.initMap = initMap;
     window.onload = loadMapThemeFromLocalStorage; // load map theme when window loads
     </script>

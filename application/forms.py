@@ -32,6 +32,8 @@ class JoinForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
+    lat = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Latitude', max_digits=22, decimal_places=16)
+    lng = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Longitude', max_digits=22, decimal_places=16)
 
 class DistancePreferenceForm(forms.Form):
     distance = forms.ChoiceField(choices=[

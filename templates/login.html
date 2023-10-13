@@ -25,10 +25,43 @@
         {% if correct == False %}
         <p style = "font-size: .75rem; color:rgb(209, 64, 64);">invalid username and or password</p>
         {% endif %}
-        <input id = "submitBtn" type="submit"  value = "Login"/>
+        <input id = "submitBtn" type="submit" value = "Login" disabled/>
         <a href="/join">create an account</a>
         </form>
     </div>
   </body>
+  <style>
+  #submitBtn:disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  #submitBtn:disabled:hover {
+    background: #4d7cce;
+  }
+  </style>
+  <script>
+    const lat = document.getElementById("id_lat");
+    const lng = document.getElementById("id_lng");
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            // enable the submit button and set the latitude and longitude values
+            lng.value = position.coords.longitude;
+            lat.value = position.coords.latitude;
+            document.getElementById("submitBtn").disabled = false;
+          },
+          function (error) {
+            // handle geolocation error here
+            alert("Geolocation error: " + error.message + "\nPlease allow Location services for this website to access it.") ;
+          }
+        );
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
+    }
+    getLocation()
+  </script>
   <script src="../static/js/cursor.js"></script>
 </html>

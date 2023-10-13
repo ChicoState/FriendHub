@@ -2,7 +2,7 @@
   <head>
     {% load static %}
     {% include "header.html" %}
-    <link rel="stylesheet" href="{%static 'css/form.css' %}?v=1.02" />
+    <link rel="stylesheet" href="{%static 'css/form.css' %}?v=1.03" />
   </head>
   <body style = "position: relative;">
     {% include "cursorWave.html" %}
@@ -49,31 +49,31 @@
     cursor: not-allowed;
     opacity: 0.5;
   }
+  #submitBtn:disabled:hover {
+    background: #4d7cce;
+  }
   </style>
   <script>
     const lat = document.getElementById("id_lat");
     const lng = document.getElementById("id_lng");
 
     function getLocation() {
+      console.log("here")
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           function (position) {
-            // Enable the submit button and set the latitude and longitude values
             lng.value = position.coords.longitude;
             lat.value = position.coords.latitude;
             document.getElementById("submitBtn").disabled = false;
           },
           function (error) {
-            // Handle geolocation error here, you can show an error message to the user.
             alert("Geolocation error: " + error.message + "\nPlease allow Location services for this website to access it.") ;
+            document.getElementById("submitBtn").disabled = true;
           }
         );
-        // Prevent the form from submitting until we have geolocation data
-        return false;
       } else {
-        // Geolocation is not supported by this browser, you can show an error message to the user.
         alert("Geolocation is not supported by your browser.");
-        return false;
+        document.getElementById("submitBtn").disabled = true;
       }
     }
     getLocation()
