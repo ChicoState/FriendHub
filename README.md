@@ -1,6 +1,7 @@
-# FriendHub - Your Location Sharing Service
+# <img src="https://github.com/ChicoState/FriendHub/assets/101899800/1c407830-d0fa-4a33-b0f0-9b4be572b91e" alt="FriendHub" width="50" height="50" style="margin-bottom: -10px; padding: 0;"/> FriendHub - Your Location Sharing Service
 
 FriendHub is a Django-based location-sharing application that allows users to connect with friends, share their real-time locations, and visualize how much of their location is visible to their friends. 
+
 
 <i>Note: This group project is created for the Software Engineer Class at Chico State, please do not create any pull requests as they will not be accepted.</i>
 
