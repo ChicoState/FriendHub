@@ -35,228 +35,31 @@
         </select>
       </div>    
     <div id="map"></div>
+    <script type="text/javascript" src="{% static '../static/js/styles.js' %}"></script>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
-    const styles = {
-        default: [], 
-        night: [
-            { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-            { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-            { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-            {
-                featureType: "administrative.locality",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#d59563" }],
-            },
-            {
-                featureType: "poi",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#d59563" }],
-            },
-            {
-                featureType: "poi.park",
-                elementType: "geometry",
-                stylers: [{ color: "#263c3f" }],
-            },
-            {
-                featureType: "poi.park",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#6b9a76" }],
-            },
-            {
-                featureType: "road",
-                elementType: "geometry",
-                stylers: [{ color: "#38414e" }],
-            },
-            {
-                featureType: "road",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#212a37" }],
-            },
-            {
-                featureType: "road",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#9ca5b3" }],
-            },
-            {
-                featureType: "road.highway",
-                elementType: "geometry",
-                stylers: [{ color: "#746855" }],
-            },
-            {
-                featureType: "road.highway",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#1f2835" }],
-            },
-            {
-                featureType: "road.highway",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#f3d19c" }],
-            },
-            {
-                featureType: "transit",
-                elementType: "geometry",
-                stylers: [{ color: "#2f3948" }],
-            },
-            {
-                featureType: "transit.station",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#d59563" }],
-            },
-            {
-                featureType: "water",
-                elementType: "geometry",
-                stylers: [{ color: "#17263c" }],
-            },
-            {
-                featureType: "water",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#515c6d" }],
-            },
-            {
-                featureType: "water",
-                elementType: "labels.text.stroke",
-                stylers: [{ color: "#17263c" }],
-            },
-            {
-                featureType: "road",
-                elementType: "labels.icon",
-                stylers: [{ visibility: "off" }],
-            },
-        ],
-        retro: [
-            { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
-            { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
-            { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
-            {
-                featureType: "administrative",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#c9b2a6" }],
-            },
-            {
-                featureType: "administrative.land_parcel",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#dcd2be" }],
-            },
-            {
-                featureType: "administrative.land_parcel",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#ae9e90" }],
-            },
-            {
-                featureType: "landscape.natural",
-                elementType: "geometry",
-                stylers: [{ color: "#dfd2ae" }],
-            },
-            {
-                featureType: "poi",
-                elementType: "geometry",
-                stylers: [{ color: "#dfd2ae" }],
-            },
-            {
-                featureType: "poi",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#93817c" }],
-            },
-            {
-                featureType: "poi.park",
-                elementType: "geometry.fill",
-                stylers: [{ color: "#a5b076" }],
-            },
-            {
-                featureType: "poi.park",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#447530" }],
-            },
-            {
-                featureType: "road",
-                elementType: "geometry",
-                stylers: [{ color: "#f5f1e6" }],
-            },
-            {
-                featureType: "road.arterial",
-                elementType: "geometry",
-                stylers: [{ color: "#fdfcf8" }],
-            },
-            {
-                featureType: "road.highway",
-                elementType: "geometry",
-                stylers: [{ color: "#f8c967" }],
-            },
-            {
-                featureType: "road.highway",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#e9bc62" }],
-            },
-            {
-                featureType: "road.highway.controlled_access",
-                elementType: "geometry",
-                stylers: [{ color: "#e98d58" }],
-            },
-            {
-                featureType: "road.highway.controlled_access",
-                elementType: "geometry.stroke",
-                stylers: [{ color: "#db8555" }],
-            },
-            {
-                featureType: "road.local",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#806b63" }],
-            },
-            {
-                featureType: "transit.line",
-                elementType: "geometry",
-                stylers: [{ color: "#dfd2ae" }],
-            },
-            {
-                featureType: "transit.line",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#8f7d77" }],
-            },
-            {
-                featureType: "transit.line",
-                elementType: "labels.text.stroke",
-                stylers: [{ color: "#ebe3cd" }],
-            },
-            {
-                featureType: "transit.station",
-                elementType: "geometry",
-                stylers: [{ color: "#dfd2ae" }],
-            },
-            {
-                featureType: "water",
-                elementType: "geometry.fill",
-                stylers: [{ color: "#b9d3c2" }],
-            },
-            {
-                featureType: "water",
-                elementType: "labels.text.fill",
-                stylers: [{ color: "#92998d" }],
-            },
-            {
-                featureType: "road",
-                elementType: "labels.icon",
-                stylers: [{ visibility: "off" }],
-            },
-        ],
-    };
+    /*
+        styles object is moved to styles.js in the static dir, and is imported using the script tag
+    */
 
-    // this function checks if a theme is stored in local storage and sets it as the selected option.
+    // load map theme from local storage and set it as the selected option
     function loadMapThemeFromLocalStorage() {
         const storedTheme = localStorage.getItem('mapTheme');
-        if (storedTheme && document.getElementById('style-selector').value != "") {
-          document.getElementById('style-selector').value = storedTheme;
+        const styleSelector = document.getElementById('style-selector');
+        if (storedTheme) {
+            styleSelector.value = storedTheme;
         }
     }
 
-    // this function saves the selected theme to local storage.
+    // save the selected map theme to local storage
     function saveMapThemeToLocalStorage(theme) {
         localStorage.setItem('mapTheme', theme);
     }
 
+    // initialize Google Map
     function initMap() {
         const position = { lat: {{ latitude|safe }}, lng: {{ longitude|safe }} };
-        // Initialize map centered at the given position
+        // the google map background
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 13,
             center: position,
@@ -265,117 +68,114 @@
             streetViewControl: false,
         });
 
+        // get radius based on user preference
         function getRadiusFromPreference(preference) {
             switch (preference) {
-                case 1: return 0;       // Exact location, so no circle
-                case 2: return 500;    // 500m
-                case 3: return 1000;   // 1000m
-                case 4: return 2500;   // 2500m
-                case 5: return 5000;   // 5000m
-                default: return 100;   // Default to 100m
+                case 1: return 0; // Exact location
+                case 2: return 500; // 500m
+                case 3: return 1000; // 1000m
+                case 4: return 2500; // 2500m
+                case 5: return 5000; // 5000m
+                default: return 100; // Default
             }
         }
 
-        function getColorFromPreference(color) {
-            console.log(color);
-            switch (color) {
-                case 1: return '#007bff'; //blue      
-                case 2: return '#DC2D07'; //red
-                case 3: return '#234F1E'; //aqua
-                case 4: return '#F506FF'; //pink
-                default: return '#007bff'; //blue
+        // get color based on user preference
+        function getColorFromPreference(preference) {
+            switch (preference) {
+                case 1: return "#007bff"; // blue
+                case 2: return "#DC2D07"; // red
+                case 3: return "#234F1E"; // aqua
+                case 4: return "#F506FF"; // pink
+                default: return "#007bff"; // default
             }
         }
 
-        // Handle friends' locations
+        // put  friend locations on map
         const friendsDetails = {{ friends_details|safe }};
-            for (let friend of friendsDetails) {
-                console.log(friend)
-            try {
-                const friend_position = { lat: friend.latitude, lng: friend.longitude };
-                const color_pref = getColorFromPreference(friend.color);
-                
-                // If the user wants their exact location shown
-                if (friend.distancePreference === 1) {
-                    // Create a custom marker icon with the desired color
-                    var customMarkerIcon = {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: `${color_pref}`,  // Change 'red' to the desired color
-                    fillOpacity: 1,
-                    strokeColor: 'black',
-                    strokeWeight: 2,
-                    scale: 8  // Adjust the size of the marker as needed
-                    };
-                    new google.maps.Marker({
-                        position: friend_position,
-                        map: map,
-                        title: `${friend.username} is here`,
-                        icon: customMarkerIcon
-                    });
-                } else {
-                    // User does not want exact location shown so make a radius
-                    const friend_radius = getRadiusFromPreference(friend.distancePreference);
-                    const color_pref = getColorFromPreference(friend.color);
-                    console.log(color_pref);
-                    const circle = new google.maps.Circle({
-                        map: map,
-                        center: friend_position,
-                        radius: friend_radius,
-                        fillColor:`${color_pref}`,
-                        fillOpacity: 0.2,
-                        strokeColor: `${color_pref}`,
-                        strokeOpacity: 0.8,
-                        clickable: true,
+        friendsDetails.forEach(friend => {
+            // for each friend
+            const friend_position = { lat: friend.latitude, lng: friend.longitude };
+            const color_pref = getColorFromPreference(friend.color);
+            const infoWindow = new google.maps.InfoWindow();
+            // if the friend wants their exact location show, add a marker at their exact location
+            if (friend.distancePreference === 1) { // 1 = exact location
+                const marker = new google.maps.Marker({
+                    position: friend_position,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: color_pref, 
+                        fillOpacity: 1,
+                        strokeColor: 'black',
                         strokeWeight: 2,
-                    });
-
-                // Create an info window for this friend
-                const infoWindow = new google.maps.InfoWindow();
-
-                    // Add an event listener to the circle
-                    google.maps.event.addListener(circle, 'click', function(event) {
-                        // Calculate the center of the circle manually
-                        const circleTop = {
-                            lat: (friend_position.lat + (0.0009 * (friend_radius / 100))), // Adjusted latitude
-                            lng: friend_position.lng
-                        };
-                        // Set the content for the info window
-                        infoWindow.setContent(`In the circle: ${friend.username}`);
-                        // Open the info window at the calculated center
-                        infoWindow.setPosition(circleTop);
-                        infoWindow.open(map);
-                    });
-                }
-            } catch (e) {
-                console.error("BRUUUHHHH");
+                        scale: 8 
+                    },
+                });
+                // add an event listener to the marker (if a user clicks on the marker, tell them who is in the marker)
+                marker.addListener('click', () => {
+                    infoWindow.setContent(`At this location: ${friend.username}`);
+                    infoWindow.setPosition(friend_position);
+                    infoWindow.open(map);
+                });
+            } 
+            // else a user wants to hide etheir location, so hide them in a circle
+            else { 
+                // get how big of a circle
+                const friend_radius = getRadiusFromPreference(friend.distancePreference);
+                // create the circle
+                const circle = new google.maps.Circle({
+                    map: map,
+                    center: friend_position,
+                    radius: friend_radius,
+                    fillColor: color_pref,
+                    fillOpacity: 0.2,
+                    strokeColor: color_pref,
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                });
+                // add an event listener to the circle (if a user clicks on the circle, tell them who is in the marker)
+                circle.addListener('click', () => {
+                    const circleTop = {
+                        lat: (friend_position.lat + (0.0009 * (friend_radius / 100))),
+                        lng: friend_position.lng
+                    };
+                    infoWindow.setContent(`In the circle: ${friend.username}`);
+                    infoWindow.setPosition(circleTop);
+                    infoWindow.open(map);
+                });
             }
-        }
-        // add a style-selector control to the map.
-        const styleControl = document.getElementById("style-selector-control");
+        });
 
-        // set the map's style to the initial value of the selector.
+        // handle map style based on user preference
         const styleSelector = document.getElementById('style-selector');
-        
-        // check if a theme is stored in local storage and apply it.
         const storedTheme = localStorage.getItem('mapTheme');
         if (storedTheme) {
-          styleSelector.value = storedTheme;
-          map.setOptions({ styles: styles[storedTheme] });
+            map.setOptions({ styles: styles[storedTheme] });
         } else {
-          map.setOptions({ styles: styles[styleSelector.value] });
-        }
-
-        // apply new JSON when the user selects a different style.
-        styleSelector.addEventListener('change', () => {
-          if(document.getElementById('style-selector').value != ""){
             map.setOptions({ styles: styles[styleSelector.value] });
-            saveMapThemeToLocalStorage(styleSelector.value); // Save the selected theme to local storage.
-          }
+        }
+        // map style change
+        styleSelector.addEventListener('change', () => {
+            const selectedStyle = styleSelector.value;
+            if (selectedStyle) {
+                map.setOptions({ styles: styles[selectedStyle] });
+                saveMapThemeToLocalStorage(selectedStyle);
+            }
         });
-      }
+    }
 
-      window.initMap = initMap;
-      window.onload = loadMapThemeFromLocalStorage; // Load the theme from local storage when the window is loaded
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function temp(){},
+            function(error) {
+                // can't get location log em out
+                window.location.href = '/logout';
+            }
+        );
+    }
+    window.initMap = initMap;
+    window.onload = loadMapThemeFromLocalStorage; // load map theme when window loads
     </script>
     </body>
     <script src="../static/js/cursor.js"></script>

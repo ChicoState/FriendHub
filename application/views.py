@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse
 from application.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm
-from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import UserData, FriendRequest, FriendList
 from django.contrib.auth.models import User
 from django.contrib import messages
-import requests
 from django.db.models import Q
-from application.models import UserData
+
+import requests
 import os
+
+# Your views go here
+
 
 @login_required(login_url='/login/')
 def home(request):
@@ -31,16 +33,15 @@ def map(request):
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
-    # Get the user's details
+    # get the user's details
     username = user_data.djangoUser.username
     firstname = user_data.djangoUser.first_name
     latitude = user_data.latitude
     longitude = user_data.longitude
     distance_preference = user_data.distancePreference
 
-    # Get the friend's details using the get_friends_coordinates function
+    # get the friend's details using the get_friends_coordinates function
     friends_details = user_data.get_friends_coordinates()
-
     context = {
         'username': username,
         'firstname': firstname,
@@ -102,6 +103,13 @@ def user_login(request):
             if user:
                 # check if the user account is active
                 if user.is_active:
+                    # update to current lat/lng coords
+                    lat = lform.cleaned_data["lat"]
+                    lng = lform.cleaned_data["lng"]
+                    userData = UserData.objects.get(djangoUser = user)
+                    userData.latitude = lat
+                    userData.longitude = lng
+                    userData.save()
                     # log in the user and redirect to the home page
                     login(request, user)
                     return redirect("/map")
@@ -162,32 +170,32 @@ def sendFriendRequest(request):
     if request.method == 'POST':
         # get the username from the post data
         username = request.POST.get('username1')
-        
         try:
             # get the user instance for the provided username
             receiver = User.objects.get(username=username)
-            
             # check if self-friend request
             if receiver.username != request.user.username:
-                
                 # check for mutual friendship
                 sender_friend_list = FriendList.objects.get(user=request.user)
                 if sender_friend_list.isMutualFriend(receiver):
                     messages.warning(request, "You are already friends!")
                     return redirect('friendList')
-                
                 # check for existing friend request
                 existing_request = FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists()
                 if not existing_request:
-                    FriendRequest.objects.create(sender=request.user, receiver=receiver)
-                    messages.success(request, "Friend request sent!")
+                    # check if there's a pending friend request from the receiver
+                    pending_request_from_receiver = FriendRequest.objects.filter(sender=receiver, receiver=request.user).exists()
+                    if not pending_request_from_receiver:
+                        FriendRequest.objects.create(sender=request.user, receiver=receiver)
+                        messages.success(request, "Friend request sent!")
+                    else:
+                        messages.warning(request, "You already have a pending friend request from this user!")
                 else:
                     messages.warning(request, "Friend request already sent!")
             else:
                 messages.warning(request, "You cannot send a friend request to yourself!")
         except User.DoesNotExist:
             messages.error(request, "User does not exist!")
-    
     return redirect('friendList')
 
 @login_required(login_url='/login/')
