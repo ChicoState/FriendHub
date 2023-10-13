@@ -89,7 +89,7 @@ class UserData(models.Model):
 
         # calculate a random offset, but ensure it's no more than one-quarter of the radius.
         # this ensures that the user's location is still within the circle.
-        max_offset = radius_in_degrees / 4
+        max_offset = radius_in_degrees / 2
         offset_lat = random.uniform(-max_offset, max_offset)
         offset_lng = random.uniform(-max_offset, max_offset)
 
