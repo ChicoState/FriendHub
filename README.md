@@ -13,7 +13,7 @@ The first thing to do is to clone the repository:
 $ git clone git@github.com:ChicoState/FriendHub.git
 $ cd FriendHub
 ```
-Get your [Google Maps API Key](https://console.cloud.google.com/) to obtain your API key.
+Get your [Google Maps JS API Key](https://console.cloud.google.com/).
 Then create a .env in the current directory & add your API key inside it like this:
 ```sh
 $ API_KEY="<KEY>"
