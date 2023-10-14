@@ -159,7 +159,7 @@ p {
 
 h2 {
   margin-bottom: 0;
-  font-weight: 400;
+  font-weight: 200;
 }
 
 .friends-section ul {
@@ -370,7 +370,6 @@ body.night-mode {
 
 body.night-mode h2 {
   color: #fca311;
-  font-weight: 200;
 }
 
 body.night-mode .requestsContainer, body.night-mode .friends-section {
@@ -387,7 +386,6 @@ body.retro-mode {
 
 body.retro-mode h2 {
   color: #0075A2;
-  font-weight: 200;
 }
 
 body.retro-mode .requestsContainer, body.retro-mode .friends-section {
