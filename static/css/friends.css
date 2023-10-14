@@ -281,7 +281,7 @@ a {
 }
 
 .accept {
-  color: #008000;
+  color: rgb(3, 172, 3);
   padding-right: 5px;
 }
 
@@ -378,6 +378,14 @@ body.night-mode .requestsContainer, body.night-mode .friends-section {
 
 body.night-mode td, body.night-mode th {
     color: #c8ccd1;
+}
+
+body.night-mode .remove {
+  color: rgb(209, 30, 30);
+}
+
+body.night-mode .remove:hover {
+  color: red;
 }
 
 body.retro-mode {
