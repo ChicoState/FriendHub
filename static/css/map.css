@@ -46,7 +46,7 @@ p {
   font-weight: 700;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Poppins', sans-serif;    
+  font-family: 'Chivo', sans-serif;    
   text-transform: uppercase;
   padding: 0;
   margin: 0;
@@ -99,7 +99,7 @@ p {
 .selector-control {
   border-radius: 5px;
   font-size: .9rem;
-  font-family: 'Poppins', sans-serif;    
+  font-family: 'Chivo', sans-serif;    
   padding: 5px 10px; 
   border-radius: 5px; 
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);

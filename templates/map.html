@@ -150,6 +150,7 @@
         // handle map style based on user preference
         const styleSelector = document.getElementById('style-selector');
         const storedTheme = localStorage.getItem('mapTheme');
+        console.log(storedTheme)
         if (storedTheme) {
             map.setOptions({ styles: styles[storedTheme] });
         } else {

@@ -6,7 +6,7 @@
 body {
   position: relative;
   overflow-x: hidden;
-  font-family: 'Poppins', sans-serif;    
+  font-family: 'Chivo', sans-serif;    
   height: 100vh;
   width: 100%;
   margin: 0;
@@ -104,7 +104,7 @@ p {
   font-weight: 700;
   text-align: center;
   letter-spacing: 1px;
-  font-family: 'Poppins', sans-serif;    
+  font-family: 'Chivo', sans-serif;    
   text-transform: uppercase;
   padding: 0;
   margin: 0;
@@ -159,6 +159,7 @@ p {
 
 h2 {
   margin-bottom: 0;
+  font-weight: 200;
 }
 
 .friends-section ul {
@@ -247,12 +248,12 @@ table th, table td {
 
 table th, table td {
   padding-left: 0;
+  font-weight: 200;
 }
 
 table th {
-  /* background-color: #f2f2f2; */
-  border-radius: 5px;
-  /* background-color: rgb(126, 103, 103); */
+   border-radius: 5px;
+  font-weight: 400;
 }
 
 table th:first-of-type{
@@ -274,46 +275,22 @@ a {
 }
 
 .remove, .accept {
-  position: relative; /* Required for ::before positioning */
+  position: relative;
   display: inline-block;
   transition: 100ms ease-in-out, color 0.3s ease; /* Added color transition */
 }
 
-.remove:hover, .accept:hover {
-  transform: scale(.98);
-}
-
-.remove:hover {
-  color: #b80c0c;
-}
-
 .accept {
-  color: #008000;
+  color: rgb(3, 172, 3);
   padding-right: 5px;
 }
 
-.accept::before, .remove::before {
-  content: "";
-  position: absolute;
-  bottom: 0; 
-  left: -5px;
-  right: 0;
-  height: 1px;
-  background-color: rgb(3, 70, 3);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.remove::before {
-  background-color: rgb(114, 14, 14);
-}
-
 .accept:hover {
-  color: rgb(3, 70, 3);
+  color: rgb(6, 213, 6);
 }
 
-.accept:hover::before, .remove:hover::before {
-  transform: scaleX(.8);
+.remove:hover{
+  color: red;
 }
 
 .messages-wrapper {
@@ -321,7 +298,8 @@ a {
 }
 
 .messages {
-  font-weight: 700;
+  text-transform: lowercase;
+  font-weight: 400;
   position: absolute;
   top: -2.5em; 
   right: 0;
@@ -384,4 +362,40 @@ a {
 .color-selector select {
   padding-left: 10px;
   width: 78px;
+}
+
+body.night-mode {
+  background-color: #242f3e;
+}
+
+body.night-mode h2 {
+  color: #fca311;
+}
+
+body.night-mode .requestsContainer, body.night-mode .friends-section {
+  background-color: #37475e;
+}
+
+body.night-mode td, body.night-mode th {
+    color: #c8ccd1;
+}
+
+body.night-mode .remove {
+  color: rgb(209, 30, 30);
+}
+
+body.night-mode .remove:hover {
+  color: red;
+}
+
+body.retro-mode {
+  background-color: #dccfa9;
+}
+
+body.retro-mode h2 {
+  color: #0075A2;
+}
+
+body.retro-mode .requestsContainer, body.retro-mode .friends-section {
+  background-color: #ebe3cd;
 }
