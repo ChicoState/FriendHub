@@ -3,7 +3,7 @@
     {% load static %}
     {% include "header.html" %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
-    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.03"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.04"/>
 </head>
 <body id>
     <a href = "/map">
@@ -137,6 +137,22 @@
     });
     document.getElementById("id_color").addEventListener("change", (e) => {
         document.getElementById("colorForm").submit();
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+    const currentTheme = localStorage.getItem('mapTheme');
+        
+        if(currentTheme) {
+            switch (currentTheme) {
+            case 'night':
+                document.body.classList.add('night-mode');
+                break;
+            case 'retro':
+                document.body.classList.add('retro-mode');
+                break;
+            default:
+                break;
+            }
+        }
     });
 </script>
 </html>
