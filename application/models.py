@@ -71,6 +71,14 @@ class UserData(models.Model):
         return self.djangoUser.username
     
     def get_obfuscated_location(self):
+
+        # if the user shows their exact location, don't obfuscate it
+        if (self.distancePreference == 1):
+            return self.latitude, self.longitude
+        # if a user wants to hide their location
+        if(self.distancePreference == 6):
+            return 0, 0
+
         # map distance preferences to radius in meters
         preference_to_radius = {
             1: 0, 

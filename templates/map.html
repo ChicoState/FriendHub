@@ -118,9 +118,7 @@
                     infoWindow.setPosition(friend_position);
                     infoWindow.open(map);
                 });
-            } 
-            // else a user wants to hide etheir location, so hide them in a circle
-            else { 
+            } else if (friend.distancePreference != 6) {
                 // get how big of a circle
                 const friend_radius = getRadiusFromPreference(friend.distancePreference);
                 // create the circle
