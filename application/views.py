@@ -196,7 +196,7 @@ def removeFriend(request, friendId):
         friendToRemove = User.objects.get(id=friendId)
         
         # remove the friend
-        userFriendList = FriendList.objects.get(user=current_user)
+        userFriendList = FriendList.objects.get(user=currentUser)
         userFriendList.unfriend(friendToRemove)
         messages.success(request, f"Successfully unfriended {friendToRemove.username}!")
         
