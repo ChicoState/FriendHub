@@ -22,11 +22,6 @@ def home(request):
 def map(request):
     # Get the user's data instance
     user_data = UserData.objects.get(djangoUser=request.user)
-    # retrieve friend requests for the current user
-    friendRequestsReceived = FriendRequest.objects.filter(receiver=request.user)
-    friendRequestsSent = FriendRequest.objects.filter(sender=request.user)
-    # get or create friendlist for the current user
-    friends, _ = FriendList.objects.get_or_create(user=request.user)
     # get user data for current user
     user_data = UserData.objects.get(djangoUser=request.user)
     currentDistancePreference = user_data.distancePreference
@@ -43,14 +38,10 @@ def map(request):
     # get the friend's details using the get_friends_coordinates function
     friends_details = user_data.get_friends_coordinates()
     context = {
-        'username': username,
-        'firstname': firstname,
         'latitude': latitude,
         'longitude': longitude,
         'distance_preference': distance_preference,
         'friends_details': friends_details,
-        'friendRequestsSent': friendRequestsSent,
-        'friends': friends.friends.all(),
         'form': form
     }
     return render(request, 'map.html', context)
