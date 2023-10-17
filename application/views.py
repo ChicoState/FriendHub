@@ -20,27 +20,24 @@ def home(request):
 
 @login_required(login_url='/login/')
 def map(request):
-    # Get the user's data instance
-    user_data = UserData.objects.get(djangoUser=request.user)
     # get user data for current user
     user_data = UserData.objects.get(djangoUser=request.user)
     currentDistancePreference = user_data.distancePreference
+  
+    # get or create friendlist for the current user
+    _, _ = FriendList.objects.get_or_create(user=request.user)
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
     # get the user's details
-    username = user_data.djangoUser.username
-    firstname = user_data.djangoUser.first_name
     latitude = user_data.latitude
     longitude = user_data.longitude
-    distance_preference = user_data.distancePreference
 
     # get the friend's details using the get_friends_coordinates function
     friends_details = user_data.get_friends_coordinates()
     context = {
         'latitude': latitude,
         'longitude': longitude,
-        'distance_preference': distance_preference,
         'friends_details': friends_details,
         'form': form
     }
