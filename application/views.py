@@ -21,8 +21,8 @@ def home(request):
 @login_required(login_url='/login/')
 def map(request):
     # get user data for current user
-    user_data = UserData.objects.get(djangoUser=request.user)
-    currentDistancePreference = user_data.distancePreference
+    userData = UserData.objects.get(djangoUser=request.user)
+    currentDistancePreference = userData.distancePreference
   
     # get or create friendlist for the current user
     _, _ = FriendList.objects.get_or_create(user=request.user)
@@ -30,11 +30,11 @@ def map(request):
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
     # get the user's details
-    latitude = user_data.latitude
-    longitude = user_data.longitude
+    latitude = userData.latitude
+    longitude = userData.longitude
 
     # get the friend's details using the get_friends_coordinates function
-    friends_details = user_data.get_friends_coordinates()
+    friends_details = userData.get_friends_coordinates()
     context = {
         'latitude': latitude,
         'longitude': longitude,
@@ -133,9 +133,9 @@ def friendList(request):
     friends, _ = FriendList.objects.get_or_create(user=request.user)
     
     # get user data for current user
-    user_data = UserData.objects.get(djangoUser=request.user)
-    currentDistancePreference = user_data.distancePreference
-    currentColorPreference = user_data.colorPreference
+    userData = UserData.objects.get(djangoUser=request.user)
+    currentDistancePreference = userData.distancePreference
+    currentColorPreference = userData.colorPreference
     
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
@@ -164,16 +164,16 @@ def sendFriendRequest(request):
             # check if self-friend request
             if receiver.username != request.user.username:
                 # check for mutual friendship
-                sender_friend_list = FriendList.objects.get(user=request.user)
-                if sender_friend_list.isMutualFriend(receiver):
+                senderFriendList = FriendList.objects.get(user=request.user)
+                if senderFriendList.isMutualFriend(receiver):
                     messages.warning(request, "You are already friends!")
                     return redirect('friendList')
                 # check for existing friend request
-                existing_request = FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists()
-                if not existing_request:
+                existingRequest = FriendRequest.objects.filter(sender=request.user, receiver=receiver).exists()
+                if not existingRequest:
                     # check if there's a pending friend request from the receiver
-                    pending_request_from_receiver = FriendRequest.objects.filter(sender=receiver, receiver=request.user).exists()
-                    if not pending_request_from_receiver:
+                    pendingRequestFromReceiver = FriendRequest.objects.filter(sender=receiver, receiver=request.user).exists()
+                    if not pendingRequestFromReceiver:
                         FriendRequest.objects.create(sender=request.user, receiver=receiver)
                         messages.success(request, "Friend request sent!")
                     else:
@@ -189,21 +189,21 @@ def sendFriendRequest(request):
 @login_required(login_url='/login/')
 def removeFriend(request, friendId):
     # get the current user
-    current_user = request.user
+    currentUser = request.user
     
     try:
         # get the user instance for the friend to remove
-        friend_to_remove = User.objects.get(id=friendId)
+        friendToRemove = User.objects.get(id=friendId)
         
         # remove the friend
-        user_friend_list = FriendList.objects.get(user=current_user)
-        user_friend_list.unfriend(friend_to_remove)
-        messages.success(request, f"Successfully unfriended {friend_to_remove.username}!")
+        userFriendList = FriendList.objects.get(user=currentUser)
+        userFriendList.unfriend(friendToRemove)
+        messages.success(request, f"Successfully unfriended {friendToRemove.username}!")
         
         # remove any friend requests between the two users
         FriendRequest.objects.filter(
-            Q(sender=current_user, receiver=friend_to_remove) | 
-            Q(sender=friend_to_remove, receiver=current_user)
+            Q(sender=currentUser, receiver=friendToRemove) | 
+            Q(sender=friendToRemove, receiver=currentUser)
         ).delete()
     except User.DoesNotExist:
         messages.error(request, "User does not exist!")
@@ -215,28 +215,28 @@ def removeFriend(request, friendId):
 @login_required(login_url='/login/')
 def acceptFriendRequest(request, requestId):  
     # get the friend request object
-    friend_request = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
+    friendRequest = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
     
     # accept the friend request
-    friend_request.accept()
+    friendRequest.accept()
     return redirect('friendList')
 
 @login_required(login_url='/login/')
 def declineFriendRequest(request, requestId):
     # get the friend request object
-    friend_request = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
+    friendRequest = get_object_or_404(FriendRequest, id=requestId, receiver=request.user)
     
     # decline the friend request
-    friend_request.decline()
+    friendRequest.decline()
     return redirect('friendList')
 
 @login_required(login_url='/login/')
 def cancelFriendRequest(request, requestId):
     # get the friend request object
-    friend_request = get_object_or_404(FriendRequest, id=requestId, sender=request.user)
+    friendRequest = get_object_or_404(FriendRequest, id=requestId, sender=request.user)
     
     # cancel the friend request
-    friend_request.cancel()
+    friendRequest.cancel()
     return redirect('friendList')
 
 @login_required(login_url='/login/')
