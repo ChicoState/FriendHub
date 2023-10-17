@@ -34,11 +34,11 @@ def map(request):
     longitude = userData.longitude
 
     # get the friend's details using the get_friends_coordinates function
-    friendsDetails = userData.get_friends_coordinates()
+    friends_details = userData.get_friends_coordinates()
     context = {
         'latitude': latitude,
         'longitude': longitude,
-        'friendsDetails': friendsDetails,
+        'friends_details': friends_details,
         'form': form
     }
     return render(request, 'map.html', context)
