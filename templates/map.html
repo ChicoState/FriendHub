@@ -48,6 +48,8 @@
         const styleSelector = document.getElementById('style-selector');
         if (storedTheme) {
             styleSelector.value = storedTheme;
+        }else {
+            styleSelector.value = 'default';
         }
     }
 
