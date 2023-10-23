@@ -93,6 +93,16 @@
             }
         }
 
+        function getIconFromPreference(preference) {
+            switch (preference) {
+                case 1: return "Circle"; // blue
+                case 2: return "Triangle"; // red
+                case 3: return "Square"; // aqua
+
+                default: return "Circle"; // default
+            }
+        }
+
         // put  friend locations on map
         const friendsDetails = {{ friends_details|safe }};
         friendsDetails.forEach(friend => {
@@ -100,20 +110,41 @@
             const friend_position = { lat: friend.latitude, lng: friend.longitude };
             const color_pref = getColorFromPreference(friend.color);
             const infoWindow = new google.maps.InfoWindow();
+            const icon_pref = getIconFromPreference(friend.icon);
             // if the friend wants their exact location show, add a marker at their exact location
             if (friend.distancePreference === 1) { // 1 = exact location
+                
+
+                icon = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: color_pref,
+                    fillOpacity: 1,
+                    strokeColor: "black",
+                    strokeWeight: 1.2,
+                    scale: 1.2
+                }
+
+                if(icon_pref === "Circle") {
+                    icon.path='M 0,0 m -8,0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0'
+
+                    
+                }
+
+                if(icon_pref === "Triangle") {
+                    icon.path = 'M 0 -8 L 8 8 -8 8 Z'
+
+                }
+
+                if(icon_pref === "Square") {
+                    icon.path = 'M -8 -8 L 8 -8 8 8 -8 8 Z'
+
+                }
                 const marker = new google.maps.Marker({
-                    position: friend_position,
-                    map: map,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        fillColor: color_pref, 
-                        fillOpacity: 1,
-                        strokeColor: 'black',
-                        strokeWeight: 2,
-                        scale: 8 
-                    },
-                });
+                        position: friend_position,
+                        map: map,
+                        icon: icon
+                    });
+                
                 // add an event listener to the marker (if a user clicks on the marker, tell them who is in the marker)
                 marker.addListener('click', () => {
                     infoWindow.setContent(`At this location: ${friend.username}`);
