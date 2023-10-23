@@ -145,14 +145,14 @@ def friendList(request):
 
     iconForm = IconPreferenceForm(initial={'icon': currentIconPreference})
 
-
     context = {
         'friendRequestsReceived': friendRequestsReceived,
         'friendRequestsSent': friendRequestsSent,
         'friends': friends.friends.all(),
         'form': form,
         'colorForm': colorForm,
-        'iconForm': iconForm
+        'iconForm': iconForm,
+        'currentDistancePreference': currentDistancePreference
     }
     
     return render(request, 'friendList.html', context)
