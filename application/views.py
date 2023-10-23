@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from application.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm
+from application.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm, IconPreferenceForm
 from django.contrib.auth.decorators import login_required
 from .models import UserData, FriendRequest, FriendList
 from django.contrib.auth.models import User
@@ -136,11 +136,14 @@ def friendList(request):
     userData = UserData.objects.get(djangoUser=request.user)
     currentDistancePreference = userData.distancePreference
     currentColorPreference = userData.colorPreference
+    currentIconPreference = userData.iconPreference
     
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
     colorForm = ColorPreferenceForm(initial={'color': currentColorPreference})
+
+    iconForm = IconPreferenceForm(initial={'icon': currentIconPreference})
 
 
     context = {
@@ -148,7 +151,8 @@ def friendList(request):
         'friendRequestsSent': friendRequestsSent,
         'friends': friends.friends.all(),
         'form': form,
-        'colorForm': colorForm
+        'colorForm': colorForm,
+        'iconForm': iconForm
     }
     
     return render(request, 'friendList.html', context)
@@ -265,5 +269,18 @@ def setColorPreference(request):
             colorSelected = form.cleaned_data.get('color')
             userData = UserData.objects.get(djangoUser=request.user)
             userData.colorPreference = colorSelected
+            userData.save()
+            return redirect('friendList')
+
+@login_required(login_url='/login')
+def setIconPreference(request):
+    if request.method == 'POST':
+        # handle post method for setting icon preference
+        form = IconPreferenceForm(request.POST)
+        if form.is_valid():
+            #update users icon preference
+            iconSelected = form.cleaned_data.get('icon')
+            userData = UserData.objects.get(djangoUser=request.user)
+            userData.iconPreference = iconSelected
             userData.save()
             return redirect('friendList')

@@ -45,6 +45,13 @@ class DistancePreferenceForm(forms.Form):
         (5, '5000m'),
     ])
 
+class IconPreferenceForm(forms.Form):
+    icon = forms.ChoiceField(choices=[
+        (1, 'Circle'),
+        (2, 'Triangle'),
+        (3, 'Square'),
+    ])
+
 class ColorPreferenceForm(forms.Form):
     color = forms.ChoiceField(choices=[
         (1, 'blue'),

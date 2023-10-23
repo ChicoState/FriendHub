@@ -65,6 +65,7 @@ class UserData(models.Model):
     longitude = models.FloatField(default=0.00)
     distancePreference = models.IntegerField(default=1)
     colorPreference = models.IntegerField(default=1)
+    iconPreference = models.IntegerField(default=1)
     friends = models.ManyToManyField('self', blank=True)
 
     def __str__(self) -> str:
@@ -129,7 +130,8 @@ class UserData(models.Model):
                 'latitude': obfuscated_latitude,
                 'longitude': obfuscated_longitude,
                 'distancePreference': user_data_instance.distancePreference,
-                'color': user_data_instance.colorPreference
+                'color': user_data_instance.colorPreference,
+                'icon': user_data_instance.iconPreference
             }
             coords_list.append(coords)
 

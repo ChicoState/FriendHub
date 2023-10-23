@@ -41,6 +41,13 @@
                 {{colorForm.color}}
             </div>
         </form>        
+        <form id = "iconForm" method="post" action="{% url 'setIconPreference' %}">
+            {% csrf_token %}
+            <div class = "icon-selector">
+                <label for="{{iconForm.icon.idForLabel}}">select your icon</label>
+                {{iconForm.icon}}
+            </div>
+        </form>   
         <div class="friends-section">
             <h2>Current Friends</h2>
             <table>
@@ -137,6 +144,9 @@
     });
     document.getElementById("id_color").addEventListener("change", (e) => {
         document.getElementById("colorForm").submit();
+    });
+    document.getElementById("id_icon").addEventListener("change", (e) => {
+        document.getElementById("iconForm").submit();
     });
     document.addEventListener("DOMContentLoaded", function() {
     const currentTheme = localStorage.getItem('mapTheme');

@@ -18,4 +18,6 @@ urlpatterns = [
     path('removeFriend/<int:friendId>/', app_views.removeFriend, name='removeFriend'),
     path('setDistancePreference/', app_views.setDistancePreference, name='setDistancePreference'),
     path('setColorPreference/', app_views.setColorPreference, name='setColorPreference'),
+    path('setIconPreference/', app_views.setIconPreference, name='setIconPreference'),
+
 ]
