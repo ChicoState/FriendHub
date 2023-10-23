@@ -29,47 +29,53 @@ class TestViews(TestCase):
             longitude=2.0
         )
 
-    def testJoinGET(self):
+    # Test Join
+    def testJoin(self):
         response = self.client.get(self.joinUrl)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'join.html')
-
-    def testLoginGET(self):
+    # Test Login
+    def testLogin(self):
         response = self.client.get(self.loginUrl)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
-    def testMapGET_loggedIn(self):
+    # If Map Page Is Up
+    def testMap(self):
         self.client.login(username='testuser1', password='password')  # Using the credentials of the test user
         response = self.client.get(self.mapUrl)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'map.html')
 
-    def testMapGET_notLoggedIn(self):
+    # Test Map Redirect
+    def testMapNotLoggedIn(self):
         response = self.client.get(self.mapUrl, follow=True)
 
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.redirect_chain)
         self.assertTemplateUsed(response, 'login.html')  # Expecting a redirect to the login page
 
-    def testFriendListGET(self):
+    # If FriendList's Page Is Up
+    def testFriendList(self):
         self.client.login(username='testuser1', password='password')
         response = self.client.get(self.friendListUrl)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'friendList.html')
 
-    def testHomeGET(self):
+    # Test Redirect
+    def testHomeNotLoggedIn(self):
         response = self.client.get(self.homeUrl, follow=True)
 
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.redirect_chain)
         self.assertTemplateUsed(response, 'login.html')  # Expecting a redirect to the login page
 
-    def testLoginPOST_logsInUser(self):
+    # Test User Login
+    def testLoginCorrect(self):
         response = self.client.post(self.loginUrl, {
             'username': 'testuser1',
             'password': 'password',
@@ -80,8 +86,9 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'map.html')
-
-    def testLoginPOST_badCredentials(self):
+    
+    # Test's Login W/ Invalid Credentials
+    def testLoginInvalid(self):
         response = self.client.post(self.loginUrl, {
             'username': 'testuser1',
             'password': 'wrongpassword'
@@ -91,12 +98,11 @@ class TestViews(TestCase):
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'login.html')
         self.assertFalse(response.context['correct'])
-
-    def testLogoutPOST(self):
+    
+    # Tests User Logout
+    def testLogout(self):
         self.client.login(username='testuser1', password='password')
-
         response = self.client.post(self.logoutUrl, follow=True)
-
         self.assertEquals(response.status_code, 200)
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'login.html')
