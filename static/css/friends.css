@@ -334,11 +334,13 @@ a {
   right: 10px; 
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px; 
   background-color: rgba(255, 255, 255, 0.7); 
   padding: 5px 10px; 
   border-radius: 5px; 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  width: 230px; 
 }
 
 .color-selector {
@@ -363,7 +365,7 @@ a {
   cursor: none;
 }
 
-.color-selector select {
+.color-selector select, .icon-selector select {
   padding-left: 10px;
   width: 78px;
 }
