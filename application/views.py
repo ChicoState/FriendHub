@@ -25,7 +25,6 @@ def map(request):
     currentDistancePreference = userData.distancePreference
   
     # get or create friendlist for the current user
-    print(request.user)
     _, _ = FriendList.objects.get_or_create(user=request.user)
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
