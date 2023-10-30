@@ -103,6 +103,19 @@
             }
         }
 
+        // get circle layering based on distance preference
+        /*
+            smaller circles with get higher layering priority, just in case they get overlapped by a bigger radius circle
+        */
+        function getZIndex(preference) {
+            switch (preference) {
+                case 2: return 5; // 5
+                case 3: return 4; // 4
+                case 4: return 3; // 3
+                case 5: return 2; // 2
+            }
+        }
+
         // put  friend locations on map
         const friendsDetails = {{ friends_details|safe }};
         friendsDetails.forEach(friend => {
@@ -116,8 +129,8 @@
                 icon = {
                     path: google.maps.SymbolPath.CIRCLE,
                     fillColor: color_pref,
-                    fillOpacity: 1,
-                    strokeColor: "black",
+                    fillOpacity: .35,
+                    strokeColor: color_pref, //"black",
                     strokeWeight: 1.2,
                     scale: 1.2
                 }
@@ -143,6 +156,8 @@
                 });
                 
             } else if (friend.distancePreference != 6) {
+                // circle layering
+                const z_index = getZIndex(friend.distancePreference);
                 // get how big of a circle
                 const friend_radius = getRadiusFromPreference(friend.distancePreference);
                 // create the circle
@@ -155,6 +170,7 @@
                     strokeColor: color_pref,
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
+                    zIndex: z_index,
                 });
                 // add an event listener to the circle (if a user clicks on the circle, tell them who is in the marker)
                 circle.addListener('click', () => {
