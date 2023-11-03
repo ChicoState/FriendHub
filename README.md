@@ -23,7 +23,8 @@ $ API_KEY="<KEY>"
 Create a virtual environment to install dependencies in and activate it:
 
 ```sh
-$ virtualenv2 --no-site-packages env
+$ pip install virtualenv (if not installed already)
+$ virtualenv env
 $ source env/bin/activate
 ```
 
