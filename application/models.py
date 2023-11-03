@@ -63,7 +63,7 @@ class UserData(models.Model):
     #store location in "latitude" and "longitude"
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
-    distancePreference = models.IntegerField(default=1)
+    distancePreference = models.IntegerField(default=6)
     colorPreference = models.IntegerField(default=1)
     iconPreference = models.IntegerField(default=1)
     friends = models.ManyToManyField('self', blank=True)
@@ -79,7 +79,6 @@ class UserData(models.Model):
         # if a user wants to hide their location
         if(self.distancePreference == 6):
             return 0, 0
-
         # map distance preferences to radius in meters
         preference_to_radius = {
             1: 0, 
