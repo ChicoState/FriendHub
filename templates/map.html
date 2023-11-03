@@ -132,7 +132,6 @@
                     fillOpacity: .35,
                     strokeColor: color_pref, //"black",
                     strokeWeight: 1.2,
-                    scale: 1.2
                 }
                 if(icon_pref === "Circle") {
                     icon.path='M 0,0 m -8,0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0'  
@@ -171,6 +170,7 @@
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
                     zIndex: z_index,
+                    scale: 1.2,
                 });
                 // add an event listener to the circle (if a user clicks on the circle, tell them who is in the marker)
                 circle.addListener('click', () => {
