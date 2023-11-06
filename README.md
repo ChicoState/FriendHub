@@ -23,7 +23,8 @@ $ API_KEY="<KEY>"
 Create a virtual environment to install dependencies in and activate it:
 
 ```sh
-$ virtualenv2 --no-site-packages env
+$ pip install virtualenv (if not installed already)
+$ virtualenv env
 $ source env/bin/activate
 ```
 
@@ -41,3 +42,8 @@ Once `pip` has finished downloading the dependencies:
 (env)$ python manage.py runserver
 ```
 And navigate to `http://127.0.0.1:8000/`.
+
+To leave virtual env:
+```sh
+(env)$ deactive
+```

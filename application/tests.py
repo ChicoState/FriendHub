@@ -27,13 +27,13 @@ class TestViews(TestCase):
         self.testUser2Data = UserData.objects.create(djangoUser=self.testUser2, latitude=2.0, longitude=2.0)
         _, _ = FriendList.objects.get_or_create(user=self.testUser2)
 
-    def testJoin(self):
+    def testJoinPage(self):
         # Test to ensure the join page is accessible
         response = self.client.get(self.joinUrl)
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'join.html')
 
-    def testLogin(self):
+    def testLoginPage(self):
         # Test to ensure the login page is accessible
         response = self.client.get(self.loginUrl)
         self.assertEquals(response.status_code, 200)
@@ -96,6 +96,20 @@ class TestViews(TestCase):
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
         self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
         self.assertTrue(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser2).exists())
+
+    def testSendSelfFriendReq(self):
+        # Test to validate sending self a friend request
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser1'})
+        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser1).exists())
+    
+    def testSendBadFriendReq(self):
+        # Test to validate sending a friend request to a not existing user
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(reverse('sendFriendRequest'), {'username1': 'DoesNotExist'})
+        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1).exists())
 
     def testAcceptFriendReq(self):
         # Test to validate accepting a friend request
