@@ -5,7 +5,7 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.04"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.05"/>
   </head>
   <body>
     {% include "cursorWave.html" %}
@@ -34,6 +34,13 @@
           <option value="retro">retro</option>
         </select>
       </div>    
+      <div id="legend" class="legend">
+        <div class = "legend-title">
+            <h3>navigate to</h3>
+        </div>
+        <ul id="legend-list">
+        </ul>
+      </div>  
     <div id="map"></div>
     <script type="text/javascript" src="{% static '../static/js/styles.js' %}"></script>
     <script src="{% url 'gMap' %}" defer></script>
@@ -69,6 +76,24 @@
             fullscreenControl: false,
             streetViewControl: false,
         });
+        const infoWindow = new google.maps.InfoWindow();
+        function openInfoWindow(friend) {
+            if(friend.distancePreference != 1) {
+                const circleTop = {
+                    lat: (friend.latitude + (0.0009 * (getRadiusFromPreference(friend.distancePreference) / 100))),
+                    lng: friend.longitude
+                };
+                console.log("meow")
+                infoWindow.setContent(`In the circle: ${friend.username}`);
+                infoWindow.setPosition(circleTop);
+                infoWindow.open(map);
+            } else {
+                console.log("ruff")
+                infoWindow.setContent(`At this location: ${friend.username}`);
+                infoWindow.setPosition({ lat: friend.latitude, lng: friend.longitude });
+                infoWindow.open(map);
+            }
+        }
 
         // get radius based on user preference
         function getRadiusFromPreference(preference) {
@@ -78,7 +103,7 @@
                 case 3: return 1000; // 1000m
                 case 4: return 2500; // 2500m
                 case 5: return 5000; // 5000m
-                default: return 100; // Default
+                default: return 500; // Default
             }
         }
 
@@ -122,7 +147,6 @@
             // for each friend
             const friend_position = { lat: friend.latitude, lng: friend.longitude };
             const color_pref = getColorFromPreference(friend.color);
-            const infoWindow = new google.maps.InfoWindow();
             const icon_pref = getIconFromPreference(friend.icon);
             // if the friend wants their exact location show, add a marker at their exact location
             if (friend.distancePreference === 1) { // 1 = exact location
@@ -149,9 +173,7 @@
                 
                 // add an event listener to the marker (if a user clicks on the marker, tell them who is in the marker)
                 marker.addListener('click', () => {
-                    infoWindow.setContent(`At this location: ${friend.username}`);
-                    infoWindow.setPosition(friend_position);
-                    infoWindow.open(map);
+                    openInfoWindow(friend);
                 });
                 
             } else if (friend.distancePreference != 6) {
@@ -174,13 +196,7 @@
                 });
                 // add an event listener to the circle (if a user clicks on the circle, tell them who is in the marker)
                 circle.addListener('click', () => {
-                    const circleTop = {
-                        lat: (friend_position.lat + (0.0009 * (friend_radius / 100))),
-                        lng: friend_position.lng
-                    };
-                    infoWindow.setContent(`In the circle: ${friend.username}`);
-                    infoWindow.setPosition(circleTop);
-                    infoWindow.open(map);
+                    openInfoWindow(friend);
                 });
             }
         });
@@ -201,6 +217,28 @@
                 saveMapThemeToLocalStorage(selectedStyle);
             }
         });
+        initLegend({{ friends_details|safe }});
+    
+        function initLegend(friendsDetails) {
+            if(friendsDetails.length == 0) {
+                document.getElementById('legend').style.display = 'none';
+            } else {
+                const legendList = document.getElementById('legend-list');
+                legendList.innerHTML = '';
+                friendsDetails.forEach(friend => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = friend.username;
+                    listItem.onclick = function() {
+                        // when clicking on a name in the legend, move the map center to the friend's position
+                        map.panTo(new google.maps.LatLng(friend.latitude, friend.longitude));
+                        map.setZoom(14);
+                        openInfoWindow(friend);
+                    };
+                    legendList.appendChild(listItem);
+                });
+            }
+
+        }    
     }
 
     if (navigator.geolocation) {
