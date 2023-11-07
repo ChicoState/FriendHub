@@ -417,7 +417,7 @@ body.retro-mode .requestsContainer, body.retro-mode .friends-section {
 .carousel-cell img{
   border-radius: 50%;
   width: 75px;
-  height: 85% !important;
+  height: 65px !important;
 }
 
 /* smaller, dark, rounded square */
