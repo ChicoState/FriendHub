@@ -10,9 +10,7 @@ from django.db.models import Q
 
 import requests
 import os
-
-# Your views go here
-
+import json
 
 @login_required(login_url='/login/')
 def home(request):
@@ -35,11 +33,15 @@ def map(request):
 
     # get the friend's details using the get_friends_coordinates function
     friends_details = userData.get_friends_coordinates()
+    # get pfp json
+    with open('./static/json/pfps.json', 'r') as file:
+        pfps_data = json.load(file)
     context = {
         'latitude': latitude,
         'longitude': longitude,
         'friends_details': friends_details,
-        'form': form
+        'form': form,
+        'pfps_json': pfps_data
     }
     return render(request, 'map.html', context)
 
@@ -137,7 +139,6 @@ def friendList(request):
     currentDistancePreference = userData.distancePreference
     currentColorPreference = userData.colorPreference
     currentIconPreference = userData.iconPreference
-    
     # instantiate the distance preference form
     form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
@@ -152,6 +153,7 @@ def friendList(request):
         'form': form,
         'colorForm': colorForm,
         'iconForm': iconForm,
+        'pfpNum': currentIconPreference,
         'currentDistancePreference': currentDistancePreference
     }
     
