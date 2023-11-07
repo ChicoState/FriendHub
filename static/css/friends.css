@@ -205,6 +205,10 @@ h2 {
   border: none;
 }
 
+.friendsDiv form, .messages-wrapper{
+  width: 50%;
+}
+
 form input {
   background-color: rgba(255, 255, 255, 0.7); 
   padding: 10px 20px 10px 10px;
@@ -220,7 +224,7 @@ form input:focus{
   outline: none;
 }
 
-form button {
+form button, #pfpSubmit {
   /* background: #0037feb9; */
   background: #0035fe;
   border: none;
@@ -230,7 +234,7 @@ form button {
   border-bottom-right-radius: 5px;
 }
 
-form button:hover {
+form button:hover, #pfpSubmit:hover {
   background: rgba(2, 52, 235, 0.827)
 }
 
@@ -328,7 +332,7 @@ a {
   color: rgb(3, 172, 3);
 }
 
-.distance-selector, .color-selector, .icon-selector{
+.distance-selector, .color-selector{
   position: absolute; 
   top: 10px; 
   right: 10px; 
@@ -343,20 +347,17 @@ a {
   width: 230px; 
 }
 
+
 .color-selector {
   top: 60px;
 }
 
-.icon-selector {
-  top: 110px;
-}
-
-.distance-selector label, .color-selector label, .icon-selector label {
+.distance-selector label, .color-selector label {
   font-size: 0.9rem; 
   margin-right: 5px; 
 }
 
-.distance-selector select, .color-selector select, .icon-selector select {
+.distance-selector select, .color-selector select {
   padding: 5px;
   font-size: 0.9rem; 
   border-radius: 5px;
@@ -365,7 +366,7 @@ a {
   cursor: none;
 }
 
-.color-selector select, .icon-selector select {
+.color-selector select {
   padding-left: 10px;
   width: 78px;
 }
@@ -404,4 +405,75 @@ body.retro-mode h2 {
 
 body.retro-mode .requestsContainer, body.retro-mode .friends-section {
   background-color: #ebe3cd;
+}
+
+.carousel-cell {
+  height: 95%;
+  margin-left: 5px;
+  margin-right: 5px;
+  overflow: hidden;
+}
+
+.carousel-cell img{
+  border-radius: 50%;
+  width: 75px;
+  height: 85% !important;
+}
+
+/* smaller, dark, rounded square */
+.flickity-button {
+  background: rgba(2, 52, 235, 0.827);
+}
+.flickity-button:hover {
+  background: #0035fe;
+}
+
+.flickity-prev-next-button {
+  top: 30px;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+/* icon color */
+.flickity-button-icon {
+  fill: white;
+}
+
+/* remove dots */
+.flickity-page-dots {
+  display: none;
+}
+
+.icon-selector {
+  position: absolute; 
+  right: 250px;
+  top: 10px;
+  width: 230px;
+  height: 90px;
+  background-color: rgba(255, 255, 255, 0.7); 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  transition: 100ms ease-in-out;
+}
+
+.is-selected img{
+  border: 2px dotted black;
+}
+
+#pfpSubmit {
+  position: absolute;
+  padding: 5px 10px 5px 10px;
+  top: 105px;
+  right: 339px;
+  border-radius: 5px;
+}
+
+.icon-selector h3 {
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  font-size: .9rem;
+  color: #2b2d42;
+  font-family: 'Chivo', sans-serif;
 }
