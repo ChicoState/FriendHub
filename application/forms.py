@@ -46,7 +46,7 @@ class DistancePreferenceForm(forms.Form):
     ])
 
 class IconPreferenceForm(forms.Form):
-    icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 9)])
+    icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 10)])
 
 class ColorPreferenceForm(forms.Form):
     color = forms.ChoiceField(choices=[
