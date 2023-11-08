@@ -1,43 +1,57 @@
 * {
   cursor: none !important;
 }
-#map {
-    height: 100%;
-    width: 100%;
-}
 
 html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    cursor: none;
-  }
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
 
 .icons-container {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex; /* Use flexbox to lay out the child elements in a row */
-    gap: 5rem; /* Space between child elements */
-    /* background-color: #0028BB; */
-    background-color: #0035fe;
-    padding: 1rem 2rem 1rem 2rem;
-    z-index: 2;
-    border-radius: 25px;
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5rem;
+  background-color: #0035fe;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  z-index: 2;
+}
+
+.home-label, .fPage {
+  display: flex;
+  align-items: center;
 }
 
 .home-label {
-    display: flex;
-    align-items: center; /* Align image and text vertically */
+  flex-direction: row;
 }
 
-.home-label img {
-    width: 2rem;
-    height: 2rem;
-    opacity: 75%;
-    transition: 150ms ease-in-out;
+.fPage {
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-direction: column;
+}
+
+.home-label img, .home {
+  width: 2rem;
+  height: 2rem;
+  opacity: 75%;
+  transition: 150ms ease-in-out;
+}
+
+.home-label:hover img, .home:hover {
+  opacity: 100%;
+  transform: scale(1.02);
 }
 
 p {
@@ -48,32 +62,9 @@ p {
   letter-spacing: 1px;
   font-family: 'Chivo', sans-serif;    
   text-transform: uppercase;
-  padding: 0;
   margin: 0;
   color: #fff;
   padding-top: 0.1rem;
-}
-
-.home-label:hover img {
-  opacity: 100%;
-  transform: scale(1.02);
-}
-
-.fPage{
-  display: flex;
-  align-items: center;
-  height: 2.5rem;
-  width: 2.5rem;
-  flex-direction: column;
-}
-
-.home {
-  opacity: 75%;
-}
-
-.home:hover{
-  transform: scale(1.02);
-  opacity: 100%;
 }
 
 .circle {
@@ -81,43 +72,96 @@ p {
   width: 15px;
   border-radius: 24px;
   background-color: black;
-  position: fixed; 
+  position: fixed;
   pointer-events: none;
-  z-index: 3; /* so that it stays on top of all other elements */
+  z-index: 3;
+}
+
+.map-control, .legend, .selector-control, .gmnoprint div {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: 'Chivo', sans-serif;
 }
 
 .map-control {
   position: absolute;
-  top: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
   margin: 10px;
   z-index: 1;
   border: none;
-  border-radius: 5px;
 }
 
 .selector-control {
-  border-radius: 5px;
   font-size: .9rem;
-  font-family: 'Chivo', sans-serif;    
-  padding: 5px 10px; 
-  border-radius: 5px; 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  padding: 5px 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.7);  
 }
 
-.selector-control:focus{
+.selector-control:focus {
   outline: none;
 }
 
-.gmnoprint div{
+/* Overrides for Google Maps UI elements */
+.gmnoprint div {
   border-radius: 10px !important;
-  background: rgba(255, 255, 255, 0.7) !important;  
-  border: none !important;  
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2) !important;
 }
 
-.gm-style-cc{
+.gm-style-cc {
   display: none !important;
+}
+
+.gm-style div div a div img {
+  display: none;
+}
+
+/* Friend's Legend */
+
+.legend {
+  background: rgba(255, 255, 255, 0.90);
+  position: absolute;
+  width: 120px;
+  top: 45px;
+  right: 10px;
+  padding: 10px;
+  z-index: 1;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.legend-title {
+  display: inline-flex;
+}
+
+.legend-title img {
+  height: 15px;
+  width: 15px;
+  margin-left: 2;
+}
+
+.legend h3 {
+  font-size: 1.2em;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.legend ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legend li {
+  color: #fff;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+  background: rgba(0, 55, 254, 0.85);
+  border-radius: 10px;
+  transition: 150ms ease-in-out;
+}
+
+.legend li:hover {
+  transform: scale(1.02);
+  background: rgba(0, 55, 254, 100);
 }
