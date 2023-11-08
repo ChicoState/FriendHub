@@ -147,7 +147,7 @@
                         position: friend_position,
                         map: map,
                         icon: icon,
-                        opacity: .8,
+                        opacity: 1,
                 });
                 
                 // add an event listener to the marker (if a user clicks on the marker, tell them who is in the marker)
@@ -210,7 +210,9 @@
                     listItem.onclick = function() {
                         // when clicking on a name in the legend, move the map center to the friend's position
                         map.panTo(new google.maps.LatLng(friend.latitude, friend.longitude));
-                        map.setZoom(14);
+                        if(friend.distancePreference == 1) map.setZoom(17);
+                        else if(friend.distancePreference == 5) map.setZoom(13);
+                        else map.setZoom(14);
                         openInfoWindow(friend);
                     };
                     legendList.appendChild(listItem);
