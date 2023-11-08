@@ -1,12 +1,13 @@
 {
-    "0": "https://static.wikia.nocookie.net/xbox/images/9/9b/Blue-head-gamerpic.png/revision/latest?cb=20200426103256",
-    "1": "https://static.wikia.nocookie.net/xbox/images/a/ae/Bubble-gum-gamerpic.png/revision/latest?cb=20200426103304",
-    "2": "https://static.wikia.nocookie.net/xbox/images/b/ba/Dragon-gamerpic.jpg/revision/latest?cb=20200426103318",
-    "3": "https://static.wikia.nocookie.net/xbox/images/f/f2/Monkey-gamerpic.png/revision/latest?cb=20200426103327",
-    "4": "https://static.wikia.nocookie.net/xbox/images/d/d6/Orange-black-skull.jpg/revision/latest?cb=20200426103335",
-    "5": "https://static.wikia.nocookie.net/xbox/images/f/f2/Panda-gamerpic.png/revision/latest?cb=20200426103343",
-    "6": "https://static.wikia.nocookie.net/xbox/images/f/fd/Pirate-gamerpic.png/revision/latest?cb=20200426103400",
-    "7": "https://static.wikia.nocookie.net/xbox/images/2/2e/Smiley-face-gamerpic.png/revision/latest?cb=20200426103408",
-    "8": "https://static.wikia.nocookie.net/xbox/images/f/f0/360-wave.png/revision/latest?cb=20200426103248"
+    "0": "../static/images/profileIcons/kid.png",
+    "1": "../static/images/profileIcons/man.png",
+    "2": "../static/images/profileIcons/curly-hair.png",
+    "3": "../static/images/profileIcons/boy.png",
+    "4": "../static/images/profileIcons/bald.png",
+    "5": "../static/images/profileIcons/woman.png",
+    "6": "../static/images/profileIcons/woman-1.png",
+    "7": "../static/images/profileIcons/woman-2.png",
+    "8": "../static/images/profileIcons/girl.png",
+    "9": "../static/images/profileIcons/girl-1.png"
   }
   
