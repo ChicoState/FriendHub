@@ -18,10 +18,14 @@ function initializeCarousel(data) {
         let img = document.createElement('img');
         img.src = data[key];
         img.dataset.iconId = key;
+        if(key == getCurPfp()) {
+            img.style.border = "3px groove black"
+            img.style.background = "rgb(242, 242, 242)"
+        }
         div.appendChild(img);
         carousel.appendChild(div);
     });
-    new Flickity(carousel, {
+    const Flick = new Flickity(carousel, {
       initialIndex: getCurPfp(),
       cellAlign: 'center',
       contain: true,
@@ -31,35 +35,16 @@ function initializeCarousel(data) {
     });
     const allCells = document.querySelectorAll(".carousel-cell")
     allCells.forEach(cell => {
-        cell.addEventListener("dblclick", (e) => {
-            // remove the 'is-selected' class from all cells
-            allCells.forEach(cell => {
-                cell.classList.remove("is-selected");
-            });
-            // Add the 'is-selected' class to the clicked cell
-            e.currentTarget.classList.add("is-selected");
-            const iconForm = document.getElementById("id_icon");
-            iconForm.value = e.currentTarget.querySelector('img').getAttribute("data-icon-id")
-            document.getElementById("iconForm").submit();
-        });
+        // cell.addEventListener('click', (e) => handleEvent(e, Flick), false);
+        cell.addEventListener('dblclick', (e) => handleEvent(e, Flick), false);
     });
 }
 
-$(".iconForm").sumit(function(e) {
-    e.preventDefault();
-});
-// submit pfp selection
-document.getElementById("pfpSubmit").addEventListener("click", () => {
-    const selectedDiv = document.querySelector('.is-selected');
-    if (selectedDiv) {
-        const img = selectedDiv.querySelector('img');
-        if(img) {
-            const iconId = img.getAttribute("data-icon-id");
-            const iconForm = document.getElementById("id_icon");
-            iconForm.value = iconId
-            document.getElementById("iconForm").submit();
-        }
-    } else {
-        console.log('No selected element found.');
-    }
-})
+function handleEvent(e, Flick) {
+    const iconForm = document.getElementById("id_icon");
+    const imgNum = e.currentTarget.querySelector('img').getAttribute("data-icon-id")
+    Flick.select(imgNum);
+    Flick.reloadCells()
+    iconForm.value = imgNum
+    document.getElementById("iconForm").submit();
+}
