@@ -43,7 +43,16 @@
             </div>
         </form>        
         <div class = "icon-selector">
-            <h3>select your icon:</h3>
+            <h3>select your icon: <span id = "auto-type"></span></h3>
+            <script>
+                setTimeout(() => { var typed = new Typed("#auto-type" , {
+                    strings: [" ", "double click an icon to change!"],
+                    typeSpeed: 75,
+                    backSpeed: 100,
+                    loop: false,
+                }) 
+                }, 1500);
+            </script>  
                 <div id = "carousel" class="carousel" > </div>
         </div>
         <form style = "display: none;" id = "iconForm" method="post" action="{% url 'setIconPreference' %}">
@@ -142,6 +151,7 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script> 
 <script src="../static/js/cursor.js"></script>
 <script src="../static/js/flickity.pkgd.min.js"></script>
 <script src="../static/js/pfps.js"></script>

@@ -11,7 +11,7 @@ function initializeCarousel(data) {
     const carousel = document.getElementById('carousel');
     // Clear out any existing children just in case
     carousel.innerHTML = '';
-
+    // loop over the json data and create the images
     Object.keys(data).forEach(key => {
         let div = document.createElement('div');
         div.className = 'carousel-cell';
@@ -25,6 +25,7 @@ function initializeCarousel(data) {
         div.appendChild(img);
         carousel.appendChild(div);
     });
+    // create carousel
     const Flick = new Flickity(carousel, {
       initialIndex: getCurPfp(),
       cellAlign: 'center',
@@ -34,17 +35,21 @@ function initializeCarousel(data) {
       friction: .15
     });
     const allCells = document.querySelectorAll(".carousel-cell")
+    // for each image, add a double click event listener, and if something is double clicked on handle the event in the handleEvent function
     allCells.forEach(cell => {
-        // cell.addEventListener('click', (e) => handleEvent(e, Flick), false);
         cell.addEventListener('dblclick', (e) => handleEvent(e, Flick), false);
     });
 }
 
 function handleEvent(e, Flick) {
+    // get form
     const iconForm = document.getElementById("id_icon");
-    const imgNum = e.currentTarget.querySelector('img').getAttribute("data-icon-id")
-    Flick.select(imgNum);
-    Flick.reloadCells()
-    iconForm.value = imgNum
+    // get the img ID of the image that was doubel clicked
+    const imgNum = e.currentTarget.querySelector('img').getAttribute("data-icon-id");
+    // if the img ID is the current Pfp don't do anything
+    if(imgNum == getCurPfp()) return;
+    // put in the current imgID in the form
+    iconForm.value = imgNum;
+    // submit form :P
     document.getElementById("iconForm").submit();
 }
