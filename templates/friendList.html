@@ -4,7 +4,7 @@
     {% include "header.html" %}
     <link rel="stylesheet" href="{% static 'css/flickity.css' %}" media="screen">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
-    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.07"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/friends.css' %}?v=1.08"/>
 </head>
 <body id>
     <a href = "/map">
@@ -31,26 +31,34 @@
         <form id = "distanceForm" method="post" action="{% url 'setDistancePreference' %}">
             {% csrf_token %}
             <div class="distance-selector">
-                <label for="{{ form.distance.idForLabel }}">location visibility</label>
+                <label for="{{ form.distance.idForLabel }}">location visibility:</label>
                 {{ form.distance }}
             </div>
         </form>
         <form id = "colorForm" method="post" action="{% url 'setColorPreference' %}">
             {% csrf_token %}
             <div class = "color-selector">
-                <label for="{{colorForm.color.idForLabel}}">select your color</label>
+                <label for="{{colorForm.color.idForLabel}}">select your color:</label>
                 {{colorForm.color}}
             </div>
         </form>        
         <div class = "icon-selector">
-            <h3>select your icon</h3>
+            <h3>select your icon: <span id = "auto-type"></span></h3>
+            <script>
+                setTimeout(() => { var typed = new Typed("#auto-type" , {
+                    strings: [" ", "double click an icon to change!"],
+                    typeSpeed: 75,
+                    backSpeed: 100,
+                    loop: false,
+                }) 
+                }, 1500);
+            </script>  
                 <div id = "carousel" class="carousel" > </div>
         </div>
-        <button id = "pfpSubmit">select</button>
         <form style = "display: none;" id = "iconForm" method="post" action="{% url 'setIconPreference' %}">
             {% csrf_token %}
             <div>
-                <label for="{{iconForm.icon.idForLabel}}">select your icon</label>
+                <label for="{{iconForm.icon.idForLabel}}">select your icon:</label>
                 {{iconForm.icon}}
             </div>
         </form>   
@@ -143,10 +151,12 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script> 
 <script src="../static/js/cursor.js"></script>
 <script src="../static/js/flickity.pkgd.min.js"></script>
 <script src="../static/js/pfps.js"></script>
 <script>
+    
     function getCurPfp() {
         return {{pfpNum}}
     }
