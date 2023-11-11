@@ -133,7 +133,7 @@
         friendsDetails.forEach(friend => {
             // for each friend
             const friend_position = { lat: friend.latitude, lng: friend.longitude };
-            const color_pref = getColorFromPreference(friend.color);
+            const color_pref = friend.color;
             // if the friend wants their exact location show, add a marker at their exact location
             if (friend.distancePreference === 1) { // 1 = exact location
                 const pfps = {{pfps_json|safe}}
