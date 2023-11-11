@@ -124,7 +124,7 @@ p {
   width: 120px;
   top: 45px;
   right: 10px;
-  padding: 10px;
+  padding: 10px 10px 10px 9px;
   z-index: 1;
   font-size: 0.9em;
   text-align: center;
@@ -153,11 +153,12 @@ p {
 }
 
 .legend li {
+  overflow: hidden;
   color: #fff;
   margin-bottom: 5px;
   letter-spacing: 1px;
   background: rgba(0, 55, 254, 0.85);
-  border-radius: 10px;
+  border-radius: 2.5px;
   transition: 150ms ease-in-out;
 }
 
