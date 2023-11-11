@@ -10,7 +10,7 @@ class UserData(models.Model):
     latitude = models.FloatField(default=0.00)
     longitude = models.FloatField(default=0.00)
     distancePreference = models.IntegerField(default=6)
-    colorPreference = models.CharField(max_length=7)
+    colorPreference = models.CharField(default = "#0035fe", max_length=7)
     iconPreference = models.IntegerField(default=1)
     friends = models.ManyToManyField('self', blank=True)
 

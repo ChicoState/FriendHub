@@ -158,9 +158,9 @@ class TestViews(TestCase):
     def testSetColorForm(self):
         # Test to validate the color preference form
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.colorUrl, {'color': 1})
+        response = self.client.post(self.colorUrl, {'color': "#000000"})
         userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertEqual(userD.colorPreference, 1)
+        self.assertEqual(userD.colorPreference, "#000000")
         self.assertEqual(response.status_code, 302)  # Expecting a successful redirection
 
     def testSetIconForm(self):

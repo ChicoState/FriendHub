@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 class JoinForm(forms.ModelForm):
     password = forms.CharField(
@@ -13,7 +13,7 @@ class JoinForm(forms.ModelForm):
         widget=forms.TextInput())
     username = forms.CharField(
         widget=forms.TextInput(),
-        validators=[MinLengthValidator(3)]
+        validators=[MinLengthValidator(3), MaxLengthValidator(15)]
     )
     lat = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Latitude', max_digits=22, decimal_places=16)
     lng = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Longitude', max_digits=22, decimal_places=16)
@@ -48,15 +48,5 @@ class DistancePreferenceForm(forms.Form):
 class IconPreferenceForm(forms.Form):
     icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 16)])
 
-class ColorPreferenceForm(forms.ModelForm):
-    #color = forms.ChoiceField(choices=[
-      #  (1, 'blue'),
-      #  (2, 'red'),
-      #  (3, 'green'),
-      #  (4, 'pink'),
-    #])
-    class Meta:
-        model = User
-        fields = ['color']
-
+class ColorPreferenceForm(forms.Form):
     color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}))
