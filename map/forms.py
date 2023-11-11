@@ -48,10 +48,15 @@ class DistancePreferenceForm(forms.Form):
 class IconPreferenceForm(forms.Form):
     icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 16)])
 
-class ColorPreferenceForm(forms.Form):
-    color = forms.ChoiceField(choices=[
-        (1, 'blue'),
-        (2, 'red'),
-        (3, 'green'),
-        (4, 'pink'),
-    ])
+class ColorPreferenceForm(forms.ModelForm):
+    #color = forms.ChoiceField(choices=[
+      #  (1, 'blue'),
+      #  (2, 'red'),
+      #  (3, 'green'),
+      #  (4, 'pink'),
+    #])
+    class Meta:
+        model = User
+        fields = ['color']
+
+    color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}))
