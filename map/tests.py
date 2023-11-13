@@ -91,25 +91,27 @@ class TestViews(TestCase):
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'login.html')
 
+    # FRIEND FORM TESTS
+
     def testSendFriendReq(self):
         # Test to validate sending a friend request
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertTrue(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser2).exists())
 
     def testSendSelfFriendReq(self):
         # Test to validate sending self a friend request
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser1'})
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser1).exists())
     
     def testSendBadFriendReq(self):
         # Test to validate sending a friend request to a not existing user
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'DoesNotExist'})
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1).exists())
 
     def testAcceptFriendReq(self):
@@ -117,7 +119,7 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         friend_request = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
         response = self.client.get(reverse('acceptFriendRequest', args=[friend_request.id]))
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertTrue(self.testUser1.user.friends.filter(pk=self.testUser2.pk).exists())
         self.assertTrue(self.testUser2.friends.filter(pk=self.testUser1.user.pk).exists())
 
@@ -126,7 +128,7 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         friend_request = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
         response = self.client.get(reverse('declineFriendRequest', args=[friend_request.id]))
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
 
     def testCancelFriendReq(self):
@@ -134,7 +136,7 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         friend_request = FriendRequest.objects.create(sender=self.testUser1, receiver=self.testUser2)
         response = self.client.get(reverse('cancelFriendRequest', args=[friend_request.id]))
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
 
     def testRemoveFriend(self):
@@ -143,9 +145,11 @@ class TestViews(TestCase):
         self.testUser1.user.friends.add(self.testUser2)
         self.testUser2.friends.add(self.testUser1.user)
         response = self.client.get(reverse('removeFriend', args=[self.testUser2.pk]))
-        self.assertEquals(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEquals(response.status_code, 302)
         self.assertFalse(self.testUser1.user.friends.filter(pk=self.testUser2.pk).exists())
         self.assertFalse(self.testUser2.friends.filter(pk=self.testUser1.user.pk).exists())
+
+    # DISTANCE FORM TESTS 
 
     def testSetDistanceForm(self):
         # Test to validate the distance preference form
@@ -153,7 +157,36 @@ class TestViews(TestCase):
         response = self.client.post(self.distanceUrl, {'distance': 2})
         userD = UserData.objects.get(djangoUser=self.testUser1)
         self.assertEqual(userD.distancePreference, 2)
-        self.assertEqual(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEqual(response.status_code, 302) 
+
+    def testInvalidSetDistanceForm(self):
+        # Test to validate the distance preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.distanceUrl, {'distance': 'invalid !!'}, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.distancePreference, 2)
+        self.assertEqual(response.status_code, 200) 
+
+    def testInvalidBigNumSetDistanceForm(self):
+        # Test to validate the distance preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.distanceUrl, {'distance': 8}, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.distancePreference, 2)
+        self.assertEqual(response.status_code, 200) 
+
+    def testInvalidSmallNumSetDistanceForm(self):
+        # Test to validate the distance preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.distanceUrl, {'distance': 0}, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.distancePreference, 2)
+        self.assertEqual(response.status_code, 200) 
+
+    # COLOR FORM TESTS
 
     def testSetColorForm(self):
         # Test to validate the color preference form
@@ -161,12 +194,59 @@ class TestViews(TestCase):
         response = self.client.post(self.colorUrl, {'color': "#000000"})
         userD = UserData.objects.get(djangoUser=self.testUser1)
         self.assertEqual(userD.colorPreference, "#000000")
-        self.assertEqual(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEqual(response.status_code, 302)  
+
+    def testInvalidSetColorForm(self):
+        # Test to validate the color preference form with invalid input
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.colorUrl, {'color': "#0"}, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.colorPreference, "#0")
+        self.assertEqual(response.status_code, 200)     
+
+    def testInvalid2BigSetColorForm(self):
+        # Test to validate the color preference form with invalid input
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.colorUrl, {'color': "#THISISWAYTOOBIG"}, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.colorPreference, "#THISISWAYTOOBIG")
+        self.assertEqual(response.status_code, 200)        
+
+    # ICON FORM TESTS
 
     def testSetIconForm(self):
         # Test to validate the icon preference form
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.iconUrl, {'icon': 2})
+        response = self.client.post(self.iconUrl, {'icon': 0})
         userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertEqual(userD.iconPreference, 2)
-        self.assertEqual(response.status_code, 302)  # Expecting a successful redirection
+        self.assertEqual(userD.iconPreference, 0)
+        self.assertEqual(response.status_code, 302)  
+
+    def testInvalidSetIconForm(self):
+        # Test to validate the icon preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.iconUrl, {'icon': 'invalid :p'})
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.iconPreference, 'invalid :p')
+        self.assertEqual(response.status_code, 200)
+
+    def testInvalidBigNumSetIconForm(self):
+        # Test to validate the icon preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.iconUrl, {'icon': 30})
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.iconPreference, 30)
+        self.assertEqual(response.status_code, 200) 
+
+    def testInvalidSmallNumSetIconForm(self):
+        # Test to validate the icon preference form
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(self.iconUrl, {'icon': -1})
+        self.assertFalse(response.context['form'].is_valid())
+        userD = UserData.objects.get(djangoUser=self.testUser1)
+        self.assertNotEqual(userD.iconPreference, -1)
+        self.assertEqual(response.status_code, 200) 

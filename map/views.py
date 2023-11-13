@@ -154,6 +154,9 @@ def setColorPreference(request):
             userData.colorPreference = colorSelected
             userData.save()
             return redirect('friendList')
+        
+    context = {'form': form}
+    return render(request, 'friendList.html', context)
 
 @login_required(login_url='/login')
 def setIconPreference(request):
@@ -167,3 +170,6 @@ def setIconPreference(request):
             userData.iconPreference = iconSelected
             userData.save()
             return redirect('friendList')
+        
+    context = {'form': form}
+    return render(request, 'friendList.html', context)

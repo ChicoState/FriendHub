@@ -43,10 +43,10 @@ class DistancePreferenceForm(forms.Form):
         (3, '1000m'),
         (4, '2500m'),
         (5, '5000m'),
-    ])
+    ], validators=[MinLengthValidator(1), MaxLengthValidator(6)])
 
 class IconPreferenceForm(forms.Form):
-    icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 16)])
+    icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 16)], validators=[MinLengthValidator(0), MaxLengthValidator(15)])
 
 class ColorPreferenceForm(forms.Form):
-    color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}))
+    color = forms.CharField(widget=forms.TextInput(attrs={'type': 'color'}), min_length=7, max_length = 7)
