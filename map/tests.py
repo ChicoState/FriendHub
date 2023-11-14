@@ -144,7 +144,7 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         self.testUser1.user.friends.add(self.testUser2)
         self.testUser2.friends.add(self.testUser1.user)
-        response = self.client.get(reverse('removeFriend', args=[self.testUser2.pk]))
+        response = self.client.get(reverse('removeFriend', args=[self.testUser2.id]))
         self.assertEquals(response.status_code, 302)
         self.assertFalse(self.testUser1.user.friends.filter(id=self.testUser2.id).exists())
         self.assertFalse(self.testUser2.friends.filter(id=self.testUser1.user.id).exists())
