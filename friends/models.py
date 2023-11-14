@@ -9,20 +9,20 @@ class FriendList(models.Model):
         return self.user.username
     
     def addFriend(self, account):
-        # Add a new friend
+        # add a new friend
         if not account in self.friends.all():
             self.friends.add(account)
     
     def removeFriend(self, account):
-        # Remove a friend
+        # remove a friend
         if account in self.friends.all():
             self.friends.remove(account)
     
     def unfriend(self, removee):
-        # Initiate unfriending someone :(
+        # initiate unfriending someone :(
         removerFriendsList = self # person removing the other person
         removerFriendsList.removeFriend(removee)
-        # Removing user from removee friend list
+        # removing user from removee friend list
         friendList = FriendList.objects.get(user=removee)
         friendList.removeFriend(self.user)
 
@@ -40,7 +40,7 @@ class FriendRequest(models.Model):
 
     def __str__(self):
         return self.sender.username
-    
+    # i mean just read the function name
     def accept(self):
         receiverFriendList = FriendList.objects.get(user=self.receiver)
         if receiverFriendList:
@@ -48,10 +48,10 @@ class FriendRequest(models.Model):
             senderFriendList = FriendList.objects.get(user=self.sender)
             if senderFriendList:
                 senderFriendList.addFriend(self.receiver)
-                self.delete()  # Delete the friend request after accepting
-    
+                self.delete()
+    # deleting friend req after declining
     def decline(self):
-        self.delete()  # Delete the friend request after declining
-    
+        self.delete()
+    # deleting friend req after cancelling
     def cancel(self):
-        self.delete()  # Delete the friend request after canceling
+        self.delete()

@@ -1,12 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from map.forms import DistancePreferenceForm, ColorPreferenceForm, IconPreferenceForm
 from django.contrib.auth.decorators import login_required
-from map.models import UserData
+from map.models import UserData, FriendLocationPreference
 from .models import FriendRequest, FriendList
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
-
 
 @login_required(login_url='/login/')
 def friendList(request):
@@ -19,25 +18,25 @@ def friendList(request):
     
     # get user data for current user
     userData = UserData.objects.get(djangoUser=request.user)
-    currentDistancePreference = userData.distancePreference
     currentColorPreference = userData.colorPreference
     currentIconPreference = userData.iconPreference
-    # instantiate the distance preference form
-    form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
+    # create a dictionary to hold a form for each friend
+    friend_forms = {}
+    for friend in friends.friends.all():
+        # get the current distance preference for the friend
+        preference, _ = FriendLocationPreference.objects.get_or_create(user=request.user, friend=friend, defaults={'distancePreference': 6})
+        friend_forms[friend] = DistancePreferenceForm(initial={'friend_id': friend.id, 'distance': preference.distancePreference})
     colorForm = ColorPreferenceForm(initial={'color': currentColorPreference})
-
     iconForm = IconPreferenceForm(initial={'icon': currentIconPreference})
 
     context = {
         'friendRequestsReceived': friendRequestsReceived,
         'friendRequestsSent': friendRequestsSent,
-        'friends': friends.friends.all(),
-        'form': form,
+        'friend_forms': friend_forms,
         'colorForm': colorForm,
         'iconForm': iconForm,
         'pfpNum': currentIconPreference,
-        'currentDistancePreference': currentDistancePreference
     }
     
     return render(request, 'friendList.html', context)
@@ -89,7 +88,7 @@ def removeFriend(request, friendId):
         userFriendList.unfriend(friendToRemove)
         messages.success(request, f"Successfully unfriended {friendToRemove.username}!")
         
-        # remove any friend requests between the two users
+        # remove any friend requests between the two users how does this shit work???!????
         FriendRequest.objects.filter(
             Q(sender=currentUser, receiver=friendToRemove) | 
             Q(sender=friendToRemove, receiver=currentUser)

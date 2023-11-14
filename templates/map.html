@@ -207,7 +207,11 @@
                 friendsDetails.forEach(friend => {
                     const listItem = document.createElement('li');
                     listItem.textContent = friend.username;
-                    listItem.onclick = function() {
+                    if(friend.distancePreference == 6) {
+                        listItem.classList.add('li-disabled');
+                    } else {
+                        listItem.classList.add('li-normal');
+                        listItem.onclick = function() {
                         // when clicking on a name in the legend, move the map center to the friend's position
                         map.panTo(new google.maps.LatLng(friend.latitude, friend.longitude));
                         if(friend.distancePreference == 1) map.setZoom(17);
@@ -215,6 +219,7 @@
                         else map.setZoom(14);
                         openInfoWindow(friend);
                     };
+                    }
                     legendList.appendChild(listItem);
                 });
             }

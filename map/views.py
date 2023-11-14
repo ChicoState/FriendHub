@@ -3,11 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from map.forms import JoinForm, LoginForm, DistancePreferenceForm, ColorPreferenceForm, IconPreferenceForm
 from django.contrib.auth.decorators import login_required
-from .models import UserData
+from .models import UserData, FriendLocationPreference
 from friends.models import FriendRequest, FriendList
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
+
 
 import requests
 import os
@@ -20,13 +21,9 @@ def home(request):
 @login_required(login_url='/login/')
 def map(request):
     # get user data for current user
-    userData = UserData.objects.get(djangoUser=request.user)
-    currentDistancePreference = userData.distancePreference
-  
+    userData = UserData.objects.get(djangoUser=request.user)  
     # get or create friendlist for the current user
     _, _ = FriendList.objects.get_or_create(user=request.user)
-    # instantiate the distance preference form
-    form = DistancePreferenceForm(initial={'distance': currentDistancePreference})
 
     # get the user's details
     latitude = userData.latitude
@@ -37,11 +34,11 @@ def map(request):
     # get pfp json
     with open('./static/json/pfps.json', 'r') as file:
         pfps_data = json.load(file)
+
     context = {
         'latitude': latitude,
         'longitude': longitude,
         'friends_details': friends_details,
-        'form': form,
         'pfps_json': pfps_data
     }
     return render(request, 'map.html', context)
@@ -64,7 +61,6 @@ def join(request):
                 djangoUser = user,
                 latitude = lat,
                 longitude = lng,
-                distancePreference = 1
             )
             new_user.save()
             # success
@@ -129,18 +125,21 @@ def loadMapAPI(request):
 @login_required(login_url='/login/')
 def setDistancePreference(request):
     if request.method == 'POST':
-        # handle post method for setting distance preference
         form = DistancePreferenceForm(request.POST)
         if form.is_valid():
-            # update user's distance preference
+            friend_id = form.cleaned_data.get('friend_id')
             distanceSelected = form.cleaned_data.get('distance')
-            userData = UserData.objects.get(djangoUser=request.user)
-            userData.distancePreference = distanceSelected
-            userData.save()
+            print(distanceSelected)
+            # Fetch the friend user instance
+            friend_user = get_object_or_404(User, pk=friend_id)
+            # Update or create the FriendLocationPreference
+            FriendLocationPreference.objects.update_or_create(
+                user=request.user,
+                friend=friend_user,
+                defaults={'distancePreference': distanceSelected}
+            )
             return redirect('friendList')
-
-    context = {'form': form}
-    return render(request, 'friendList.html', context)
+    return redirect('friendList')
 
 @login_required(login_url='/login')
 def setColorPreference(request):

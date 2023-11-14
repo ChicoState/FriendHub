@@ -36,7 +36,8 @@ class LoginForm(forms.Form):
     lng = forms.DecimalField(widget = forms.HiddenInput(), required = False, label='Longitude', max_digits=22, decimal_places=16)
 
 class DistancePreferenceForm(forms.Form):
-    distance = forms.ChoiceField(choices=[
+    friend_id = forms.IntegerField(widget=forms.HiddenInput())
+    distance = forms.ChoiceField(label='', choices=[
         (1, 'exact'),
         (6, 'hide'),
         (2, '500m'),
@@ -44,7 +45,7 @@ class DistancePreferenceForm(forms.Form):
         (4, '2500m'),
         (5, '5000m'),
     ], validators=[MinLengthValidator(1), MaxLengthValidator(6)])
-
+    
 class IconPreferenceForm(forms.Form):
     icon = forms.ChoiceField(choices=[(i, i) for i in range(0, 16)], validators=[MinLengthValidator(0), MaxLengthValidator(15)])
 

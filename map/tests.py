@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from map.models import UserData 
+from map.models import UserData , FriendLocationPreference
 from friends.models import FriendRequest, FriendList
 
 class TestViews(TestCase):
@@ -117,74 +117,78 @@ class TestViews(TestCase):
     def testAcceptFriendReq(self):
         # Test to validate accepting a friend request
         self.client.login(username='testuser1', password='password')
-        friend_request = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
-        response = self.client.get(reverse('acceptFriendRequest', args=[friend_request.id]))
+        friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
+        response = self.client.get(reverse('acceptFriendRequest', args=[friendRequest.id]))
         self.assertEquals(response.status_code, 302)  
-        self.assertTrue(self.testUser1.user.friends.filter(pk=self.testUser2.pk).exists())
-        self.assertTrue(self.testUser2.friends.filter(pk=self.testUser1.user.pk).exists())
+        self.assertTrue(self.testUser1.user.friends.filter(id=self.testUser2.id).exists())
+        self.assertTrue(self.testUser2.friends.filter(id=self.testUser1.user.id).exists())
 
     def testDeclineFriendReq(self):
         # Test to validate declining a friend request
         self.client.login(username='testuser1', password='password')
-        friend_request = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
-        response = self.client.get(reverse('declineFriendRequest', args=[friend_request.id]))
+        friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
+        response = self.client.get(reverse('declineFriendRequest', args=[friendRequest.id]))
         self.assertEquals(response.status_code, 302)  
-        self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
+        self.assertFalse(FriendRequest.objects.filter(id=friendRequest.id).exists())
 
     def testCancelFriendReq(self):
         # Test to validate the cancellation of a sent friend request
         self.client.login(username='testuser1', password='password')
-        friend_request = FriendRequest.objects.create(sender=self.testUser1, receiver=self.testUser2)
-        response = self.client.get(reverse('cancelFriendRequest', args=[friend_request.id]))
+        friendRequest = FriendRequest.objects.create(sender=self.testUser1, receiver=self.testUser2)
+        response = self.client.get(reverse('cancelFriendRequest', args=[friendRequest.id]))
         self.assertEquals(response.status_code, 302)  
-        self.assertFalse(FriendRequest.objects.filter(pk=friend_request.pk).exists())
+        self.assertFalse(FriendRequest.objects.filter(id=friendRequest.id).exists())
 
     def testRemoveFriend(self):
         # Test to validate the removal of a friend from the friend list
         self.client.login(username='testuser1', password='password')
         self.testUser1.user.friends.add(self.testUser2)
         self.testUser2.friends.add(self.testUser1.user)
-        response = self.client.get(reverse('removeFriend', args=[self.testUser2.pk]))
+        response = self.client.get(reverse('removeFriend', args=[self.testUser2.id]))
         self.assertEquals(response.status_code, 302)
-        self.assertFalse(self.testUser1.user.friends.filter(pk=self.testUser2.pk).exists())
-        self.assertFalse(self.testUser2.friends.filter(pk=self.testUser1.user.pk).exists())
+        self.assertFalse(self.testUser1.user.friends.filter(id=self.testUser2.id).exists())
+        self.assertFalse(self.testUser2.friends.filter(id=self.testUser1.user.id).exists())
 
     # DISTANCE FORM TESTS 
 
     def testSetDistanceForm(self):
-        # Test to validate the distance preference form
+        # Test to validate the distance preference form for a specific friend
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.distanceUrl, {'distance': 2})
-        userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertEqual(userD.distancePreference, 2)
-        self.assertEqual(response.status_code, 302) 
+        self.testAcceptFriendReq()
+        response = self.client.post(self.distanceUrl, {'friend_id': self.testUser2.id, 'distance': 2})
+        preference = FriendLocationPreference.objects.get(user=self.testUser1, friend=self.testUser2)
+        self.assertEqual(preference.distancePreference, 2)
+        self.assertEqual(response.status_code, 302)
 
     def testInvalidSetDistanceForm(self):
-        # Test to validate the distance preference form
+        # Test with invalid data
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.distanceUrl, {'distance': 'invalid !!'}, follow=True)
+        self.testAcceptFriendReq()
+        response = self.client.post(self.distanceUrl, {'friend_id': self.testUser2.id, 'distance': 'invalid !!'}, follow=True)
         self.assertFalse(response.context['form'].is_valid())
-        userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertNotEqual(userD.distancePreference, 2)
-        self.assertEqual(response.status_code, 200) 
+        preference = FriendLocationPreference.objects.filter(user=self.testUser1, friend=self.testUser2).first()
+        self.assertTrue(preference is None or preference.distancePreference != 'invalid !!')
+        self.assertEqual(response.status_code, 200)
 
     def testInvalidBigNumSetDistanceForm(self):
-        # Test to validate the distance preference form
+        # Test with a distance value that is too large
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.distanceUrl, {'distance': 8}, follow=True)
+        self.testAcceptFriendReq()
+        response = self.client.post(self.distanceUrl, {'friend_id': self.testUser2.id, 'distance': 8}, follow=True)
         self.assertFalse(response.context['form'].is_valid())
-        userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertNotEqual(userD.distancePreference, 2)
-        self.assertEqual(response.status_code, 200) 
+        preference = FriendLocationPreference.objects.filter(user=self.testUser1, friend=self.testUser2).first()
+        self.assertTrue(preference is None or preference.distancePreference != 8)
+        self.assertEqual(response.status_code, 200)
 
     def testInvalidSmallNumSetDistanceForm(self):
-        # Test to validate the distance preference form
+        # Test with a distance value that is too small
         self.client.login(username='testuser1', password='password')
-        response = self.client.post(self.distanceUrl, {'distance': 0}, follow=True)
+        self.testAcceptFriendReq()
+        response = self.client.post(self.distanceUrl, {'friend_id': self.testUser2.id, 'distance': 0}, follow=True)
         self.assertFalse(response.context['form'].is_valid())
-        userD = UserData.objects.get(djangoUser=self.testUser1)
-        self.assertNotEqual(userD.distancePreference, 2)
-        self.assertEqual(response.status_code, 200) 
+        preference = FriendLocationPreference.objects.filter(user=self.testUser1, friend=self.testUser2).first()
+        self.assertTrue(preference is None or preference.distancePreference != 0)
+        self.assertEqual(response.status_code, 200)
 
     # COLOR FORM TESTS
 
