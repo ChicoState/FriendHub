@@ -152,7 +152,7 @@ p {
   margin: 0;
 }
 
-.legend li {
+.li-disabled, .li-normal {
   overflow: hidden;
   color: #fff;
   margin-bottom: 5px;
@@ -162,7 +162,13 @@ p {
   transition: 150ms ease-in-out;
 }
 
-.legend li:hover {
+.li-normal:hover {
   transform: scale(1.02);
   background: rgba(0, 55, 254, 100);
+}
+
+.li-disabled {
+  opacity: 50%;
+  cursor: disabled;
+  pointer-events: none;
 }

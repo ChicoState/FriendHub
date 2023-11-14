@@ -45,7 +45,7 @@ p, .friends-section ul, .messages, .icon-selector h3 {
 
 .icons-container, .home-label, .fPage, .container, .friends-section,
 .requests-section, .requestsContainer, .FrContainer, .input-wrapper,
-.friendsDiv, .distance-selector, .color-selector{
+.friendsDiv, .color-selector{
   display: flex;
 }
 
@@ -53,7 +53,7 @@ p, .friends-section ul, .messages, .icon-selector h3 {
   flex-direction: column;
 }
 
-.fPage, .home-label, .input-wrapper, .distance-selector, .color-selector {
+.fPage, .home-label, .input-wrapper, .color-selector {
   align-items: center;
 }
 
@@ -70,13 +70,13 @@ p, .friends-section ul, .messages, .icon-selector h3 {
   list-style-type: none;
 }
 
-.icon-selector, form input, .distance-selector, .color-selector {
+.icon-selector, form input,.color-selector {
   background-color: var(--form-background-color);
 }
 
-.requestsContainer, .table th, .distance-selector, .color-selector,
-.distance-selector select, .color-selector select, .carousel-cell img,
-.flickity-prev-next-button  {
+.requestsContainer, .table th, .color-selector,
+.color-selector select, .carousel-cell img,
+.flickity-prev-next-button, #id_distance  {
   border-radius: var(--border-radius);
 }
 
@@ -201,7 +201,7 @@ p {
   flex: 1; 
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.250); 
   max-width: 20%; 
-  padding-right: 2rem;
+  padding-right: 1rem;
 }
 
 .friends-section h2 {
@@ -311,13 +311,15 @@ table {
 }
 
 table th, table td {
-  padding: 4px 6px;
   text-align: left;
-}
-
-table th, table td {
+  padding: 4px 6px;
   padding-left: 0;
   font-weight: 200;
+}
+
+.friends-section table th:nth-of-type(even), .friends-section table th:last-of-type,
+.friends-section table td:last-of-type {
+  text-align: center;
 }
 
 table th {
@@ -362,36 +364,37 @@ a {
 
 /* Forms */
 
-.distance-selector, .color-selector, .icon-selector, .icons-container {
+.color-selector, .icon-selector, .icons-container {
   position: absolute;
 }
 
-.distance-selector, .icon-selector {
+.icon-selector {
   top: 10px;
 }
 
-.distance-selector, .color-selector {
-  width: 230px;
-  padding: 5px 10px
+.color-selector {
+  height: 96px;
+  width: 160px;
+  padding: 3px 15px
 }
 
-.distance-selector, .color-selector{
+.color-selector{
+  flex-direction: column;
   right: 10px; 
-  justify-content: space-between;
   gap: 10px; 
   box-shadow: var(----form-shadow);
 }
 
 .color-selector {
-  top: 60px;
+  top: 10px;
 }
 
-.distance-selector label, .color-selector label {
+.color-selector label {
   font-size: 0.9rem; 
   margin-right: 5px; 
 }
 
-.distance-selector select, .color-selector input {
+#id_distance, .color-selector input {
   padding: 5px;
   font-size: 0.9rem; 
   border: 1px solid #ccc; 
@@ -399,16 +402,15 @@ a {
 }
 
 #id_color {
-  /* flex: 0; */
   padding: 0;
-  width: 80px !important;
-  height: 2rem;
+  width: 120px !important;
+  height: 3rem;
   border-radius: 5px;
   box-shadow: none;
 }
 
 .icon-selector {
-  right: 250px;
+  right: 175px;
   height: 96px;
   width: 550px;
   padding: 3px 15px; 
@@ -422,6 +424,21 @@ a {
   font-size: .9rem;
   color: #2b2d42;
   font-family: var(--main-font);
+}
+
+#distanceForm p label {
+  display: none;
+}
+
+#distanceForm {
+  margin: 0;
+  padding: 0;
+}
+
+
+#id_distance{
+  box-shadow: var(----form-shadow);
+  width: 100px;
 }
 
 /* Icon Carousel */
