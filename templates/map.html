@@ -5,7 +5,7 @@
     {% include "header.html" %}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.05"/>
+    <link rel="stylesheet" type="text/css" href="{%static 'css/map.css' %}?v=1.06"/>
   </head>
   <body>
     {% include "cursorWave.html" %}
@@ -43,7 +43,7 @@
         </ul>
       </div>  
     <div id="map"></div>
-    <script type="text/javascript" src="{% static '../static/js/styles.js' %}"></script>
+    <script type="text/javascript" src="{% static '../static/js/styles.js' %}?v=1.00"></script>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
     /*
@@ -193,7 +193,6 @@
         styleSelector.addEventListener('change', () => {
             const selectedStyle = styleSelector.value;
             if (selectedStyle) {
-                console.log(styles[selectedStyle]);
                 map.setOptions({ styles: styles[selectedStyle] });
                 saveMapThemeToLocalStorage(selectedStyle);
             }
