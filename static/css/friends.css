@@ -127,10 +127,9 @@ body.dark-mode h2 {
   color: #eae7dd;
 }
 
-body.dimmed-mode td, body.dimmed-mode th {
+body.dark-mode td, body.dark-mode th {
   color: #000;
 }
-
 
 body.retro-mode {
   background-color: var(----retro-background-color);
