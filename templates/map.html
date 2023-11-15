@@ -30,7 +30,8 @@
         <select id="style-selector" class="selector-control">
           <option hidden value = "">loading style...</option>
           <option value="default">default</option>
-          <option value="night">night mode</option>
+          <option value="dimmed">dimmed</option>
+          <option value="dark">dark</option>
           <option value="retro">retro</option>
         </select>
       </div>    
@@ -192,6 +193,7 @@
         styleSelector.addEventListener('change', () => {
             const selectedStyle = styleSelector.value;
             if (selectedStyle) {
+                console.log(styles[selectedStyle]);
                 map.setOptions({ styles: styles[selectedStyle] });
                 saveMapThemeToLocalStorage(selectedStyle);
             }
