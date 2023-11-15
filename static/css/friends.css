@@ -4,8 +4,8 @@
 
   --main-background-color: #E7ECEF;
   --form-background-color: rgba(255, 255, 255, 0.7);
-  --dark-background-color: #242f3e;
-  --dark-secondary-color: #37475e;
+  --dimmed-background-color: #242f3e;
+  --dimmed-secondary-color: #37475e;
   --retro-background-color: #dccfa9;
   --retro-secondary-color: #0075A2;
 
@@ -91,29 +91,46 @@ body {
   background-color: var(--main-background-color);
 }
 
-body.night-mode {
-  background-color: var(--dark-background-color);
+body.dimmed-mode {
+  background-color: var(--dimmed-background-color);
 }
 
-body.night-mode .requestsContainer, body.night-mode .friends-section {
-  background-color: var(--dark-secondary-color);
+body.dimmed-mode .requestsContainer, body.dimmed-mode .friends-section {
+  background-color: var(--dimmed-secondary-color);
 }
 
-body.night-mode h2 {
+body.dimmed-mode h2 {
   color: #fca311;
 }
 
-body.night-mode td, body.night-mode th {
+body.dimmed-mode td, body.dimmed-mode th {
     color: #c8ccd1;
 }
 
-body.night-mode .remove {
+body.dimmed-mode .remove {
   color: rgb(209, 30, 30);
 }
 
-body.night-mode .remove:hover {
+body.dimmed-mode .remove:hover {
   color: red;
 }
+
+body.dark-mode {
+  background-color: #303030;
+}
+
+body.dark-mode .requestsContainer, body.dark-mode .friends-section {
+  background-color: #4a4a4a;
+}
+
+body.dark-mode h2 {
+  color: #eae7dd;
+}
+
+body.dimmed-mode td, body.dimmed-mode th {
+  color: #000;
+}
+
 
 body.retro-mode {
   background-color: var(----retro-background-color);

@@ -182,11 +182,14 @@
         
         if(currentTheme) {
             switch (currentTheme) {
-            case 'night':
-                document.body.classList.add('night-mode');
+            case 'dimmed':
+                document.body.classList.add('dimmed-mode');
                 break;
             case 'retro':
                 document.body.classList.add('retro-mode');
+                break;
+            case 'dark':
+                document.body.classList.add('dark-mode');
                 break;
             default:
                 break;
