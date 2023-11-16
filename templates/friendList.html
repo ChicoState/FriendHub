@@ -167,11 +167,13 @@
     function getCurPfp() {
         return {{pfpNum}}
     }
-    if(document.getElementById("id_distance")){
-        document.getElementById("id_distance").addEventListener("change", (e) => {
-            document.getElementById("distanceForm").submit();
+
+    document.querySelectorAll("#distanceForm").forEach( (userForm) => {
+        userForm.addEventListener("change", (e) => {
+            e.preventDefault();
+            userForm.submit();
         });
-    }
+    });
 
     document.getElementById("id_color").addEventListener("change", (e) => {
         document.getElementById("colorForm").submit();
