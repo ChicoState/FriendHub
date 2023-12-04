@@ -46,6 +46,30 @@
     <script type="text/javascript" src="{% static '../static/js/styles.js' %}"></script>
     <script src="{% url 'gMap' %}" defer></script>
     <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/');
+        socket.onopen = function (event) {
+            console.log('WebSocket connection opened:', event);
+            sendCoordinates('{{user}}')
+        };
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            console.log('WebSocket message received:', data);
+            // Handle the received data (coordinates or confirmation message) as needed
+        };
+        socket.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+
+        socket.onclose = function (event) {
+            console.log('WebSocket connection closed:', event);
+        };
+
+        function sendCoordinates(user) {
+            const coordinates = { lat: 123.456, lng: 789.012, username: user}; 
+            socket.send(JSON.stringify(coordinates));
+        }
+    </script>
+    <script>
     /*
         styles object is moved to styles.js in the static dir, and is imported using the script tag
     */
