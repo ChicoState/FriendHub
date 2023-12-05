@@ -157,14 +157,15 @@ p {
   color: #fff;
   margin-bottom: 5px;
   letter-spacing: 1px;
-  background: rgba(0, 55, 254, 0.85);
+  background: #0035fe;
   border-radius: 2.5px;
   transition: 150ms ease-in-out;
 }
 
 .li-normal:hover {
   transform: scale(1.02);
-  background: rgba(0, 55, 254, 100);
+  /* background: rgba(0, 55, 254, 100); */
+  background: #0134ec;
 }
 
 .li-disabled {
