@@ -45,6 +45,54 @@
     <div id="map"></div>
     <script type="text/javascript" src="{% static '../static/js/styles.js' %}?v=1.00"></script>
     <script src="{% url 'gMap' %}" defer></script>
+
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/');
+        const curPosition = {}
+            navigator.geolocation.getCurrentPosition( (position) => {
+            curPosition = position
+        })
+        socket.onopen = function (event) {
+            console.log('WebSocket connection opened:', event);
+            sendCoordinates('{{user}}')
+        };
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            console.log('WebSocket message received:', data);
+            // Handle the received data (coordinates or confirmation message) as needed
+        };
+        socket.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+
+        socket.onclose = function (event) {
+            console.log('WebSocket connection closed:', event);
+        };
+
+        function sendCoordinates(user, lat, lng) {
+            const coordinates = { lat: lat, lng: lng, username: user}; 
+            socket.send(JSON.stringify(coordinates));
+        }
+
+        //using geolocation api to get user live location 
+        const successCallback = (position) => {
+            if(position.coordinates.latitude != curLocation.coordinates.latitude || position.coordinates.longitude != curLocation.coordinates.longitude){
+                sendCoordinates('{{user}}', position.coords.latitude, position.coords.longitude);
+            }
+        }
+
+        const errorCallback = (error) => {
+            console.error(error);
+        }
+
+        navigator.geolocation.watchPosition(successCallback, errorCallback,{
+            enableHighAccuracy: true,
+            timeout: 5000 
+        });
+        
+
+        //navigator.gelocation.clearWatch(watchId);
+    </script>
     <script>
     /*
         styles object is moved to styles.js in the static dir, and is imported using the script tag

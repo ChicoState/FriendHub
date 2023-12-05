@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+
 from map import views as app_views
 from friends import views as friends_views
 
