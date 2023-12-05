@@ -48,56 +48,43 @@
 
     <script>
         const socket = new WebSocket('ws://' + window.location.host + '/ws/');
-        const curPosition = {}
-            navigator.geolocation.getCurrentPosition( (position) => {
-            curPosition = position
-        })
-        socket.onopen = function (event) {
-            console.log('WebSocket connection opened:', event);
-            sendCoordinates('{{user}}')
-        };
-        socket.onmessage = function (event) {
-            const data = JSON.parse(event.data);
-            console.log('WebSocket message received:', data);
-            // Handle the received data (coordinates or confirmation message) as needed
-        };
-        socket.onerror = function (error) {
-            console.error('WebSocket error:', error);
-        };
+        let curPosition = {};
+        navigator.geolocation.getCurrentPosition((position) => {
+            curPosition = position.coords;
+            
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message received:', data);
+            };
 
-        socket.onclose = function (event) {
-            console.log('WebSocket connection closed:', event);
-        };
+            // if the user does not move
+            const successCallback = (position) => {
+                const newCoords = position.coords;
+                if (newCoords.latitude !== curPosition.latitude || newCoords.longitude !== curPosition.longitude) {
+                    sendCoordinates('{{username}}', newCoords.latitude, newCoords.longitude);
+                    curPosition = newCoords;
+                }
+            };
+
+            const errorCallback = (error) => {
+                console.error(error);
+            };
+
+            navigator.geolocation.watchPosition(successCallback, errorCallback, {
+                enableHighAccuracy: true,
+                timeout: 5000
+            });
+        });
 
         function sendCoordinates(user, lat, lng) {
-            const coordinates = { lat: lat, lng: lng, username: user}; 
+            const coordinates = { lat: lat, lng: lng, username: user };
             socket.send(JSON.stringify(coordinates));
         }
-
-        //using geolocation api to get user live location 
-        const successCallback = (position) => {
-            if(position.coordinates.latitude != curLocation.coordinates.latitude || position.coordinates.longitude != curLocation.coordinates.longitude){
-                sendCoordinates('{{user}}', position.coords.latitude, position.coords.longitude);
-            }
-        }
-
-        const errorCallback = (error) => {
-            console.error(error);
-        }
-
-        navigator.geolocation.watchPosition(successCallback, errorCallback,{
-            enableHighAccuracy: true,
-            timeout: 5000 
-        });
-        
-
-        //navigator.gelocation.clearWatch(watchId);
     </script>
     <script>
     /*
         styles object is moved to styles.js in the static dir, and is imported using the script tag
     */
-
     // load map theme from local storage and set it as the selected option
     function loadMapThemeFromLocalStorage() {
         const storedTheme = localStorage.getItem('mapTheme');

@@ -39,7 +39,8 @@ def map(request):
         'latitude': latitude,
         'longitude': longitude,
         'friends_details': friends_details,
-        'pfps_json': pfps_data
+        'pfps_json': pfps_data,
+        'username': request.user
     }
     return render(request, 'map.html', context)
 

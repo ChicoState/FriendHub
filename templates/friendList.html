@@ -28,13 +28,6 @@
     </div>
     {% include "cursorWave.html" %}
     <div class="container">
-        <!-- <form id = "distanceForm" method="post" action="{% url 'setDistancePreference' %}">
-            {% csrf_token %}
-            <div class="distance-selector">
-                <label for="{{ form.distance.idForLabel }}">location visibility:</label>
-                {{ form.distance }}
-            </div>
-        </form> -->
         <form id = "colorForm" method="post" action="{% url 'setColorPreference' %}">
             {% csrf_token %}
             <div class = "color-selector">
