@@ -288,7 +288,7 @@ form button {
 }
 
 form button:hover {
-  background: rgba(2, 52, 235, 0.827)
+  background: #0134ec;
 }
 
 .messages {
@@ -455,6 +455,10 @@ a {
 #id_distance{
   box-shadow: var(----form-shadow);
   width: 100px;
+}
+
+#id_distance:hover{
+  background-color: #f3f2f2;
 }
 
 /* Icon Carousel */
