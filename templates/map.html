@@ -19,6 +19,12 @@
             </a>
             <p>friends</p>
         </div>
+        <div style = "display: none;" class = "fPage">
+            <a onClick = "sendCoordinates('{{username}}', '39.738830378', '-121.8499966')" class="home-label">
+                <img title="demo" src="{% static 'images/gear.svg' %}">
+            </a>
+            <p>demo</p>
+        </div>
         <div class = "fPage">
             <a href="/logout" class="home-label">
                 <img title="logout" src="{% static 'images/logout.svg' %}">
@@ -45,19 +51,22 @@
     <div id="map"></div>
     <script type="text/javascript" src="{% static '../static/js/styles.js' %}?v=1.00"></script>
     <script src="{% url 'gMap' %}" defer></script>
-
     <script>
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/');
+        const locations = [];
+
+        const un = '{{username}}';
+        const socket = new WebSocket('ws://' + window.location.host + `/ws/?username=${un}`);
         let curPosition = {};
+
         navigator.geolocation.getCurrentPosition((position) => {
             curPosition = position.coords;
-            
+
             socket.onmessage = function (event) {
                 const data = JSON.parse(event.data);
+                updateMap(data);
                 console.log('WebSocket message received:', data);
             };
 
-            // if the user does not move
             const successCallback = (position) => {
                 const newCoords = position.coords;
                 if (newCoords.latitude !== curPosition.latitude || newCoords.longitude !== curPosition.longitude) {
@@ -76,60 +85,157 @@
             });
         });
 
+        function getMapItem(username) {
+            for (const item of locations) {
+                if (item.username === username) {
+                    return item;
+                }
+            }
+        }
+
+        function updateMap(data) {
+            map = getMap();
+            const { username, lat, lng } = data;
+            console.log(lat + " " + lng);
+            const friendsDetails = {{ friends_details|safe }};
+            friendsDetails.forEach(friend => {
+                if (friend.username == username) {
+                    const mapItem = getMapItem(friend.username);
+                    if (friend.distancePreference === 1) {
+                        mapItem.reference.setPosition(new google.maps.LatLng(lat, lng));
+                        friend.latitude = lat;
+                        friend.longitude = lng;
+                        mapItem.reference.addListener('click', () => {
+                            openInfoWindow(friend);
+                        });
+                    } else if (friend.distancePreference != 6) {
+                        mapItem.reference.setCenter(new google.maps.LatLng(lat, lng));
+                        friend.latitude = lat;
+                        friend.longitude = lng;
+                        mapItem.reference.addListener('click', () => {
+                            openInfoWindow(friend);
+                        });
+                    }
+                    initLegend(friendsDetails);
+                }
+            });
+        }
+
         function sendCoordinates(user, lat, lng) {
             const coordinates = { lat: lat, lng: lng, username: user };
             socket.send(JSON.stringify(coordinates));
         }
-    </script>
-    <script>
-    /*
-        styles object is moved to styles.js in the static dir, and is imported using the script tag
-    */
-    // load map theme from local storage and set it as the selected option
-    function loadMapThemeFromLocalStorage() {
-        const storedTheme = localStorage.getItem('mapTheme');
-        const styleSelector = document.getElementById('style-selector');
-        if (storedTheme) {
-            styleSelector.value = storedTheme;
-        }else {
-            styleSelector.value = 'default';
-        }
-    }
 
-    // save the selected map theme to local storage
-    function saveMapThemeToLocalStorage(theme) {
-        localStorage.setItem('mapTheme', theme);
-    }
+        // styles object is moved to styles.js in the static dir, and is imported using the script tag
 
-    // initialize Google Map
-    function initMap() {
-        const position = { lat: {{ latitude|safe }}, lng: {{ longitude|safe }} };
-        // the google map background
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 13,
-            center: position,
-            mapTypeControl: false,
-            fullscreenControl: false,
-            streetViewControl: false,
-        });
-        const infoWindow = new google.maps.InfoWindow();
-        function openInfoWindow(friend) {
-            if(friend.distancePreference != 1) {
-                const circleTop = {
-                    lat: (friend.latitude + (0.0009 * (getRadiusFromPreference(friend.distancePreference) / 100))),
-                    lng: friend.longitude
-                };
-                infoWindow.setContent(`In the circle: ${friend.username}`);
-                infoWindow.setPosition(circleTop);
-                infoWindow.open(map);
+        function loadMapThemeFromLocalStorage() {
+            const storedTheme = localStorage.getItem('mapTheme');
+            const styleSelector = document.getElementById('style-selector');
+            if (storedTheme) {
+                styleSelector.value = storedTheme;
             } else {
-                infoWindow.setContent(`At this location: ${friend.username}`);
-                infoWindow.setPosition({ lat: friend.latitude, lng: friend.longitude });
-                infoWindow.open(map);
+                styleSelector.value = 'default';
             }
         }
 
-        // get radius based on user preference
+        function saveMapThemeToLocalStorage(theme) {
+            localStorage.setItem('mapTheme', theme);
+        }
+
+        let map;
+        let infoWindow;
+
+        function initMap() {
+            const position = { lat: {{ latitude|safe }}, lng: {{ longitude|safe }} };
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 13,
+                center: position,
+                mapTypeControl: false,
+                fullscreenControl: false,
+                streetViewControl: false,
+            });
+            infoWindow = new google.maps.InfoWindow();
+
+            function getColorFromPreference(preference) {
+                switch (preference) {
+                    case 1: return "#007bff"; // blue
+                    case 2: return "#DC2D07"; // red
+                    case 3: return "#90EE90"; // green
+                    case 4: return "#F506FF"; // pink
+                    default: return "#007bff"; // default
+                }
+            }
+
+            function getZIndex(preference) {
+                switch (preference) {
+                    case 2: return 5; // 5
+                    case 3: return 4; // 4
+                    case 4: return 3; // 3
+                    case 5: return 2; // 2
+                }
+            }
+
+            const friendsDetails = {{ friends_details|safe }};
+            friendsDetails.forEach(friend => {
+                const friend_position = { lat: friend.latitude, lng: friend.longitude };
+                const color_pref = friend.color;
+                if (friend.distancePreference === 1) {
+                    const pfps = {{pfps_json|safe}};
+                    const icon = {
+                        url: pfps[friend.icon],
+                        scaledSize: new google.maps.Size(25, 25),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(13, 0),
+                    };
+                    const marker = new google.maps.Marker({
+                        position: friend_position,
+                        map: map,
+                        icon: icon,
+                        opacity: 1,
+                    });
+                    locations.push({ type: 'marker', username: friend.username, reference: marker });
+                    marker.addListener('click', () => {
+                        openInfoWindow(friend);
+                    });
+                } else if (friend.distancePreference != 6) {
+                    const z_index = getZIndex(friend.distancePreference);
+                    const friend_radius = getRadiusFromPreference(friend.distancePreference);
+                    const circle = new google.maps.Circle({
+                        map: map,
+                        center: friend_position,
+                        radius: friend_radius,
+                        fillColor: color_pref,
+                        fillOpacity: 0.2,
+                        strokeColor: color_pref,
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        zIndex: z_index,
+                        scale: 1.2,
+                    });
+                    locations.push({ type: 'circle', username: friend.username, reference: circle });
+                    circle.addListener('click', () => {
+                        openInfoWindow(friend);
+                    });
+                }
+            });
+
+            const styleSelector = document.getElementById('style-selector');
+            const storedTheme = localStorage.getItem('mapTheme');
+            if (storedTheme) {
+                map.setOptions({ styles: styles[storedTheme] });
+            } else {
+                map.setOptions({ styles: styles[styleSelector.value] });
+            }
+
+            styleSelector.addEventListener('change', () => {
+                const selectedStyle = styleSelector.value;
+                if (selectedStyle) {
+                    map.setOptions({ styles: styles[selectedStyle] });
+                    saveMapThemeToLocalStorage(selectedStyle);
+                }
+            });
+        }
+
         function getRadiusFromPreference(preference) {
             switch (preference) {
                 case 1: return 0; // Exact location
@@ -141,101 +247,30 @@
             }
         }
 
-        // get color based on user preference
-        function getColorFromPreference(preference) {
-            switch (preference) {
-                case 1: return "#007bff"; // blue
-                case 2: return "#DC2D07"; // red
-                case 3: return "#90EE90"; // green
-                case 4: return "#F506FF"; // pink
-                default: return "#007bff"; // default
-            }
+        function getMap() {
+            return map;
         }
-        // get circle layering based on distance preference
-        /*
-            smaller circles with get higher layering priority, just in case they get overlapped by a bigger radius circle
-        */
-        function getZIndex(preference) {
-            switch (preference) {
-                case 2: return 5; // 5
-                case 3: return 4; // 4
-                case 4: return 3; // 3
-                case 5: return 2; // 2
+
+        function openInfoWindow(friend) {
+            if (friend.distancePreference != 1) {
+                const circleTop = {
+                    lat: (parseFloat(friend.latitude) + (0.0009 * (getRadiusFromPreference(friend.distancePreference) / 100))),
+                    lng: parseFloat(friend.longitude)
+                };
+                infoWindow.setContent(`In the circle: ${friend.username}`);
+                infoWindow.setPosition(circleTop);
+                infoWindow.open(map);
+            } else {
+                infoWindow.setContent(`At this location: ${friend.username}`);
+                infoWindow.setPosition({ lat: parseFloat(friend.latitude), lng: parseFloat(friend.longitude) });
+                infoWindow.open(map);
             }
         }
 
-        // put  friend locations on map
-        const friendsDetails = {{ friends_details|safe }};
-        friendsDetails.forEach(friend => {
-            // for each friend
-            const friend_position = { lat: friend.latitude, lng: friend.longitude };
-            const color_pref = friend.color;
-            // if the friend wants their exact location show, add a marker at their exact location
-            if (friend.distancePreference === 1) { // 1 = exact location
-                const pfps = {{pfps_json|safe}}
-                icon = {
-                    url: pfps[friend.icon], 
-                    scaledSize: new google.maps.Size(25, 25),
-                    origin: new google.maps.Point(0, 0), 
-                    anchor: new google.maps.Point(13, 0),
-                }
-                const marker = new google.maps.Marker({
-                        position: friend_position,
-                        map: map,
-                        icon: icon,
-                        opacity: 1,
-                });
-                
-                // add an event listener to the marker (if a user clicks on the marker, tell them who is in the marker)
-                marker.addListener('click', () => {
-                    openInfoWindow(friend);
-                });
-                
-            } else if (friend.distancePreference != 6) {
-                // circle layering
-                const z_index = getZIndex(friend.distancePreference);
-                // get how big of a circle
-                const friend_radius = getRadiusFromPreference(friend.distancePreference);
-                // create the circle
-                const circle = new google.maps.Circle({
-                    map: map,
-                    center: friend_position,
-                    radius: friend_radius,
-                    fillColor: color_pref,
-                    fillOpacity: 0.2,
-                    strokeColor: color_pref,
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    zIndex: z_index,
-                    scale: 1.2,
-                });
-                // add an event listener to the circle (if a user clicks on the circle, tell them who is in the marker)
-                circle.addListener('click', () => {
-                    openInfoWindow(friend);
-                });
-            }
-        });
-
-        // handle map style based on user preference
-        const styleSelector = document.getElementById('style-selector');
-        const storedTheme = localStorage.getItem('mapTheme');
-        if (storedTheme) {
-            map.setOptions({ styles: styles[storedTheme] });
-        } else {
-            map.setOptions({ styles: styles[styleSelector.value] });
-        }
-        // map style change
-        styleSelector.addEventListener('change', () => {
-            const selectedStyle = styleSelector.value;
-            if (selectedStyle) {
-                map.setOptions({ styles: styles[selectedStyle] });
-                saveMapThemeToLocalStorage(selectedStyle);
-            }
-        });
         initLegend({{ friends_details|safe }});
-    
+
         function initLegend(friendsDetails) {
-            if(friendsDetails.length == 0) {
+            if (friendsDetails.length === 0) {
                 document.getElementById('legend').style.display = 'none';
             } else {
                 const legendList = document.getElementById('legend-list');
@@ -243,37 +278,34 @@
                 friendsDetails.forEach(friend => {
                     const listItem = document.createElement('li');
                     listItem.textContent = friend.username;
-                    if(friend.distancePreference == 6) {
+                    if (friend.distancePreference === 6) {
                         listItem.classList.add('li-disabled');
                     } else {
                         listItem.classList.add('li-normal');
-                        listItem.onclick = function() {
-                        // when clicking on a name in the legend, move the map center to the friend's position
-                        map.panTo(new google.maps.LatLng(friend.latitude, friend.longitude));
-                        if(friend.distancePreference == 1) map.setZoom(17);
-                        else if(friend.distancePreference == 5) map.setZoom(13);
-                        else map.setZoom(14);
-                        openInfoWindow(friend);
-                    };
+                        listItem.onclick = function () {
+                            map.panTo(new google.maps.LatLng(friend.latitude, friend.longitude));
+                            if (friend.distancePreference === 1) map.setZoom(17);
+                            else if (friend.distancePreference === 5) map.setZoom(13);
+                            else map.setZoom(14);
+                            openInfoWindow(friend);
+                        };
                     }
                     legendList.appendChild(listItem);
                 });
             }
+        }
 
-        }    
-    }
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function temp() {},
+                function (error) {
+                    window.location.href = '/logout';
+                }
+            );
+        }
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            function temp(){},
-            function(error) {
-                // can't get location log em out
-                window.location.href = '/logout';
-            }
-        );
-    }
-    window.initMap = initMap;
-    window.onload = loadMapThemeFromLocalStorage; // load map theme when window loads
+        window.initMap = initMap;
+        window.onload = loadMapThemeFromLocalStorage;
     </script>
     </body>
     <script src="../static/js/cursor.js"></script>
