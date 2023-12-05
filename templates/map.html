@@ -45,8 +45,13 @@
     <div id="map"></div>
     <script type="text/javascript" src="{% static '../static/js/styles.js' %}"></script>
     <script src="{% url 'gMap' %}" defer></script>
+
     <script>
         const socket = new WebSocket('ws://' + window.location.host + '/ws/');
+        const curPosition = {}
+            navigator.geolocation.getCurrentPosition( (position) => {
+            curPosition = position
+        })
         socket.onopen = function (event) {
             console.log('WebSocket connection opened:', event);
             sendCoordinates('{{user}}')
@@ -64,10 +69,29 @@
             console.log('WebSocket connection closed:', event);
         };
 
-        function sendCoordinates(user) {
-            const coordinates = { lat: 123.456, lng: 789.012, username: user}; 
+        function sendCoordinates(user, lat, lng) {
+            const coordinates = { lat: lat, lng: lng, username: user}; 
             socket.send(JSON.stringify(coordinates));
         }
+
+        //using geolocation api to get user live location 
+        const successCallback = (position) => {
+            if(position.coordinates.latitude != curLocation.coordinates.latitude || position.coordinates.longitude != curLocation.coordinates.longitude){
+                sendCoordinates('{{user}}', position.coords.latitude, position.coords.longitude);
+            }
+        }
+
+        const errorCallback = (error) => {
+            console.error(error);
+        }
+
+        navigator.geolocation.watchPosition(successCallback, errorCallback,{
+            enableHighAccuracy: true,
+            timeout: 5000 
+        });
+        
+
+        //navigator.gelocation.clearWatch(watchId);
     </script>
     <script>
     /*
