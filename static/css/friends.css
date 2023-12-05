@@ -132,7 +132,7 @@ body.dark-mode td, body.dark-mode th {
 }
 
 body.retro-mode {
-  background-color: var(----retro-background-color);
+  background-color: var(--retro-background-color);
 }
 
 body.retro-mode .requestsContainer, body.retro-mode .friends-section {
