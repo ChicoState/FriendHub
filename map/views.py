@@ -15,10 +15,6 @@ import os
 import json
 
 @login_required(login_url='/login/')
-def home(request):
-    return render(request, 'map.html')
-
-@login_required(login_url='/login/')
 def map(request):
     # get user data for current user
     userData = UserData.objects.get(djangoUser=request.user)  
@@ -89,21 +85,16 @@ def user_login(request):
             # authenticate the user
             user = authenticate(username=username, password=password)
             if user:
-                # check if the user account is active
-                if user.is_active:
-                    # update to current lat/lng coords
-                    lat = lform.cleaned_data["lat"]
-                    lng = lform.cleaned_data["lng"]
-                    userData = UserData.objects.get(djangoUser = user)
-                    userData.latitude = lat
-                    userData.longitude = lng
-                    userData.save()
-                    # log in the user and redirect to the home page
-                    login(request, user)
-                    return redirect("/map")
-                else:
-                    # return an HttpResponse indicating that the account is not active
-                    return HttpResponse("This account is not active.")
+                # update to current lat/lng coords
+                lat = lform.cleaned_data["lat"]
+                lng = lform.cleaned_data["lng"]
+                userData = UserData.objects.get(djangoUser = user)
+                userData.latitude = lat
+                userData.longitude = lng
+                userData.save()
+                # log in the user and redirect to the home page
+                login(request, user)
+                return redirect("/map")
             else:
                 # if authentication fails, re-render the login form with an error message
                 return render(request, 'login.html', {"login_form": LoginForm, "correct": False})
