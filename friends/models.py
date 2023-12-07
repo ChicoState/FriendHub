@@ -4,9 +4,6 @@ from django.contrib.auth.models import User
 class FriendList(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name = 'user')
     friends = models.ManyToManyField(User, blank=True, related_name='friends')
-
-    def __str__(self):
-        return self.user.username
     
     def addFriend(self, account):
         # add a new friend
@@ -37,9 +34,6 @@ class FriendRequest(models.Model):
 
     class Meta:
         unique_together = [['sender', 'receiver']]
-
-    def __str__(self):
-        return self.sender.username
     # i mean just read the function name
     def accept(self):
         receiverFriendList = FriendList.objects.get(user=self.receiver)

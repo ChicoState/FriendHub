@@ -1,0 +1,7 @@
+[run]
+source = friends, map
+omit =
+    */__init__.py
+    */migrations/*
+    */consumers.py
+    */routing.py

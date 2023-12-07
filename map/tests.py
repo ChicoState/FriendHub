@@ -1,7 +1,12 @@
+import json
+from channels.testing import WebsocketCommunicator
+from friends.consumers import LocationConsumer
+from channels.layers import get_channel_layer
+from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from map.models import UserData , FriendLocationPreference
+from map.models import UserData, FriendLocationPreference
 from friends.models import FriendRequest, FriendList
 
 class TestViews(TestCase):
@@ -9,6 +14,7 @@ class TestViews(TestCase):
     def setUp(self):
         # Setting up for the test case
         self.client = Client()
+        self.mapAPIUrl = reverse('gMap')
         self.joinUrl = reverse('join')
         self.loginUrl = reverse('login')
         self.logoutUrl = reverse('logout')
@@ -21,36 +27,44 @@ class TestViews(TestCase):
 
         # Create test users and their respective data
         self.testUser1 = User.objects.create_user(username='testuser1', password='password')
-        self.testUser1Data = UserData.objects.create(djangoUser=self.testUser1, latitude=1.0, longitude=1.0)
+        self.testUser1Data = UserData.objects.create(djangoUser=self.testUser1, latitude=2.0, longitude=2.0)
         _, _ = FriendList.objects.get_or_create(user=self.testUser1)
 
         self.testUser2 = User.objects.create_user(username='testuser2', password='password')
         self.testUser2Data = UserData.objects.create(djangoUser=self.testUser2, latitude=2.0, longitude=2.0)
         _, _ = FriendList.objects.get_or_create(user=self.testUser2)
 
+    def testMapAPI(self):
+        # Test to check map API is working
+        self.client.login(username='testuser1', password='password')
+        response = self.client.get(self.mapAPIUrl)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/javascript')
+
     def testJoinPage(self):
         # Test to ensure the join page is accessible
         response = self.client.get(self.joinUrl)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'join.html')
 
     def testLoginPage(self):
         # Test to ensure the login page is accessible
         response = self.client.get(self.loginUrl)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
     def testMap(self):
         # Test to check if the map page is functioning when logged in
         self.client.login(username='testuser1', password='password')
+        self.testAcceptFriendReq
         response = self.client.get(self.mapUrl)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'map.html')
 
     def testMapNotLoggedIn(self):
         # Test to ensure the map page redirects to login when not logged in
         response = self.client.get(self.mapUrl, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(response.redirect_chain)
         self.assertTemplateUsed(response, 'login.html')
 
@@ -58,27 +72,42 @@ class TestViews(TestCase):
         # Test to ensure the friend list page is accessible when logged in
         self.client.login(username='testuser1', password='password')
         response = self.client.get(self.friendListUrl)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'friendList.html')
 
     def testHomeNotLoggedIn(self):
         # Test to ensure home page redirects to login when not logged in
         response = self.client.get(self.homeUrl, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(response.redirect_chain)
         self.assertTemplateUsed(response, 'login.html')
 
+    # Logout/Join
+
+    def testRegistration(self):
+        # Test to validate user registration
+        response = self.client.post(self.joinUrl,{'first_name': 'n222', 'last_name': 'k222', 'email': '123@gmail.com', 'username': 'meow22222222', 'password': 'meow2312', 'lat': 4.0, 'lng': 4.0}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.filter(username='meow22222222').exists())
+
+    def testAlreadyRegisteredEmail(self):
+        # Test to test already registered email
+        self.client.post(self.joinUrl,{'first_name': 'n222', 'last_name': 'k222', 'email': '123@gmail.com', 'username': 'meow22222222', 'password': 'meow2312', 'lat': 4.0, 'lng': 4.0}, follow=True)
+        response = self.client.post(self.joinUrl,{'first_name': 'n22', 'last_name': 'k222', 'email': '123@gmail.com', 'username': 'meow11111', 'password': 'meow231', 'lat': 4.0, 'lng': 4.0}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username='meow11111').exists())
+    
     def testLoginCorrect(self):
         # Test to validate the login functionality with correct credentials
         response = self.client.post(self.loginUrl, {'username': 'testuser1', 'password': 'password', 'lat': 3.0, 'lng': 3.0}, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'map.html')
 
     def testLoginInvalid(self):
         # Test to validate the login functionality with incorrect credentials
         response = self.client.post(self.loginUrl, {'username': 'testuser1', 'password': 'wrongpassword'}, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'login.html')
         self.assertFalse(response.context['correct'])
@@ -87,9 +116,14 @@ class TestViews(TestCase):
         # Test to validate the logout functionality
         self.client.login(username='testuser1', password='password')
         response = self.client.post(self.logoutUrl, follow=True)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['user'].is_authenticated)
         self.assertTemplateUsed(response, 'login.html')
+
+    # UserData Model Test 
+
+
+
 
     # FRIEND FORM TESTS
 
@@ -97,21 +131,40 @@ class TestViews(TestCase):
         # Test to validate sending a friend request
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertTrue(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser2).exists())
+
+    def testDoubleFriendReq(self):
+        # Test to validate that you can't send multiple friend requests
+        self.client.login(username='testuser1', password='password')
+        self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
+        response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(1, FriendRequest.objects.count())
+
+    def testSendingFriendReqToARequestor(self):
+        # Test to make sure you can't send a friend request to someone who is sending one to you
+        self.client.login(username='testuser1', password='password')
+        response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
+        self.assertEqual(response.status_code, 302)
+        self.client.logout()
+        self.client.login(username='testuser2', password='password')
+        response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser1'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(1, FriendRequest.objects.count())  
 
     def testSendSelfFriendReq(self):
         # Test to validate sending self a friend request
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser1'})
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1, receiver=self.testUser1).exists())
     
     def testSendBadFriendReq(self):
         # Test to validate sending a friend request to a not existing user
         self.client.login(username='testuser1', password='password')
         response = self.client.post(reverse('sendFriendRequest'), {'username1': 'DoesNotExist'})
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(sender=self.testUser1).exists())
 
     def testAcceptFriendReq(self):
@@ -119,16 +172,22 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
         response = self.client.get(reverse('acceptFriendRequest', args=[friendRequest.id]))
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertTrue(self.testUser1.user.friends.filter(id=self.testUser2.id).exists())
         self.assertTrue(self.testUser2.friends.filter(id=self.testUser1.user.id).exists())
+
+    def testAlreadyFriends(self):
+        # Test to make sure you can't send a friend request to an already friend
+        self.testAcceptFriendReq()
+        self.client.post(reverse('sendFriendRequest'), {'username1': 'testuser2'})
+        self.assertEqual(0, FriendRequest.objects.all().count())
 
     def testDeclineFriendReq(self):
         # Test to validate declining a friend request
         self.client.login(username='testuser1', password='password')
         friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
         response = self.client.get(reverse('declineFriendRequest', args=[friendRequest.id]))
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(id=friendRequest.id).exists())
 
     def testCancelFriendReq(self):
@@ -136,7 +195,7 @@ class TestViews(TestCase):
         self.client.login(username='testuser1', password='password')
         friendRequest = FriendRequest.objects.create(sender=self.testUser1, receiver=self.testUser2)
         response = self.client.get(reverse('cancelFriendRequest', args=[friendRequest.id]))
-        self.assertEquals(response.status_code, 302)  
+        self.assertEqual(response.status_code, 302)  
         self.assertFalse(FriendRequest.objects.filter(id=friendRequest.id).exists())
 
     def testRemoveFriend(self):
@@ -145,7 +204,7 @@ class TestViews(TestCase):
         self.testUser1.user.friends.add(self.testUser2)
         self.testUser2.friends.add(self.testUser1.user)
         response = self.client.get(reverse('removeFriend', args=[self.testUser2.id]))
-        self.assertEquals(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
         self.assertFalse(self.testUser1.user.friends.filter(id=self.testUser2.id).exists())
         self.assertFalse(self.testUser2.friends.filter(id=self.testUser1.user.id).exists())
 
@@ -254,3 +313,33 @@ class TestViews(TestCase):
         userD = UserData.objects.get(djangoUser=self.testUser1)
         self.assertNotEqual(userD.iconPreference, -1)
         self.assertEqual(response.status_code, 200) 
+
+    def testGetFriendsCoordsHidden(self):
+        # Test to validate hidden coords
+        self.client.login(username='testuser1', password='password')
+        friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
+        self.client.get(reverse('acceptFriendRequest', args=[friendRequest.id]))
+        coords_list = self.testUser1Data.get_friends_coordinates()
+        self.assertEqual(coords_list[0]['latitude'], 0)
+
+    def testGetFriendsCoordsObfuscated(self):
+        # Test to validate whether coords get obfuscated
+        self.client.login(username='testuser2', password='password')
+        self.client.post(self.distanceUrl, {'friend_id': self.testUser1.id, 'distance': 2})
+        self.client.logout()
+        self.client.login(username='testuser1', password='password')
+        friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
+        self.client.get(reverse('acceptFriendRequest', args=[friendRequest.id]))
+        coords_list = self.testUser1Data.get_friends_coordinates()
+        self.assertNotEqual(coords_list[0]['latitude'], 0)
+
+    def testGetFriendsCoordsExact(self):
+        # Test to validate whether coords are exact
+        self.client.login(username='testuser2', password='password')
+        self.client.post(self.distanceUrl, {'friend_id': self.testUser1.id, 'distance': 1})
+        self.client.logout()
+        self.client.login(username='testuser1', password='password')
+        friendRequest = FriendRequest.objects.create(sender=self.testUser2, receiver=self.testUser1)
+        self.client.get(reverse('acceptFriendRequest', args=[friendRequest.id]))
+        coords_list = self.testUser1Data.get_friends_coordinates()
+        self.assertEqual(coords_list[0]['latitude'], 2.0)

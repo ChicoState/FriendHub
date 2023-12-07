@@ -78,25 +78,19 @@ def sendFriendRequest(request):
 def removeFriend(request, friendId):
     # get the current user
     currentUser = request.user
-    
-    try:
-        # get the user instance for the friend to remove
-        friendToRemove = User.objects.get(id=friendId)
+    # get the user instance for the friend to remove
+    friendToRemove = User.objects.get(id=friendId)
         
-        # remove the friend
-        userFriendList = FriendList.objects.get(user=currentUser)
-        userFriendList.unfriend(friendToRemove)
-        messages.success(request, f"Successfully unfriended {friendToRemove.username}!")
+    # remove the friend
+    userFriendList = FriendList.objects.get(user=currentUser)
+    userFriendList.unfriend(friendToRemove)
+    messages.success(request, f"Successfully unfriended {friendToRemove.username}!")
         
-        # remove any friend requests between the two users how does this shit work???!????
-        FriendRequest.objects.filter(
-            Q(sender=currentUser, receiver=friendToRemove) | 
-            Q(sender=friendToRemove, receiver=currentUser)
-        ).delete()
-    except User.DoesNotExist:
-        messages.error(request, "User does not exist!")
-    except FriendList.DoesNotExist:
-        messages.error(request, "Friend list not found!")
+    # remove any friend requests between the two users how does this shit work???!????
+    FriendRequest.objects.filter(
+        Q(sender=currentUser, receiver=friendToRemove) | 
+        Q(sender=friendToRemove, receiver=currentUser)
+    ).delete()
     
     return redirect('friendList')
 
