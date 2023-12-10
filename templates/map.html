@@ -20,7 +20,7 @@
             <p>friends</p>
         </div>
         <div style = "display: none;" class = "fPage">
-            <a onClick = "sendCoordinates('{{username}}', '39.738830378', '-121.8499966')" class="home-label">
+            <a onClick="successCallback({coords: {latitude: '39.738830378', longitude: '-121.8499966'}})" class="home-label">
                 <img title="demo" src="{% static 'images/gear.svg' %}">
             </a>
             <p>demo</p>
@@ -56,34 +56,38 @@
 
         const un = '{{username}}';
         const socket = new WebSocket('ws://' + window.location.host + `/ws/?username=${un}`);
-        let curPosition = {};
+        let curPosition = {
+            latitude: {{latitude}},
+            longitude: {{longitude}}
+        }
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            updateMap(data);
+        };
 
-        navigator.geolocation.getCurrentPosition((position) => {
-            curPosition = position.coords;
+        const successCallback = (position) => {
+            const newCoords = position.coords;
+            if (newCoords.latitude != curPosition.latitude || newCoords.longitude != curPosition.longitude) {
+                curPosition = newCoords;
+                sendCoordinates('{{username}}', newCoords.latitude, newCoords.longitude);
+            }
+        };
 
-            socket.onmessage = function (event) {
-                const data = JSON.parse(event.data);
-                updateMap(data);
-                console.log('WebSocket message received:', data);
-            };
+        const errorCallback = (error) => {
+             console.error(error);
+        };
 
-            const successCallback = (position) => {
-                const newCoords = position.coords;
-                if (newCoords.latitude !== curPosition.latitude || newCoords.longitude !== curPosition.longitude) {
-                    sendCoordinates('{{username}}', newCoords.latitude, newCoords.longitude);
-                    curPosition = newCoords;
-                }
-            };
+        socket.onclose = (e) => {
+            console.log("Closed")
+        }
 
-            const errorCallback = (error) => {
-                console.error(error);
-            };
-
-            navigator.geolocation.watchPosition(successCallback, errorCallback, {
+        function getLocation() {
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
                 enableHighAccuracy: true,
                 timeout: 5000
             });
-        });
+        }
+        setInterval(getLocation, 5000);
 
         function getMapItem(username) {
             for (const item of locations) {
@@ -96,7 +100,6 @@
         function updateMap(data) {
             map = getMap();
             const { username, lat, lng } = data;
-            console.log(lat + " " + lng);
             const friendsDetails = {{ friends_details|safe }};
             friendsDetails.forEach(friend => {
                 if (friend.username == username) {
